@@ -57,6 +57,8 @@ def process(job_id, job_input):
 
     prompt = job_input['prompt']
     negative_prompt = job_input['negative_prompt']
+    print(f"RUN WITH prompt:{prompt}, negative_prompt:{negative_prompt}, inference_steps:{inference_steps}")
+
     generated_images = sdxl_pipe(
         prompt=prompt, 
         negative_prompt=negative_prompt, 
@@ -64,12 +66,16 @@ def process(job_id, job_input):
         guidance_scale=0
     ).images
 
+    print(f"RUN ---- B {datetime.now()}");
+
     output_paths = []
     for i, sample in enumerate(generated_images):
         output_name = f"{job_id}-generated-{i}"
         output_path = f"/tmp/{output_name}.jpg"
         sample.save(output_path)
         output_paths.append(output_path)
+
+    print(f"RUN ---- C {datetime.now()}");
 
     return output_paths
 
