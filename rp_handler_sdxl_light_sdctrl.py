@@ -4,6 +4,8 @@ print(f"SETUP ---- A {datetime.now()}");
 import os
 import torch
 from diffusers import UniPCMultistepScheduler, ControlNetModel, StableDiffusionXLPipeline, StableDiffusionXLControlNetImg2ImgPipeline, UNet2DConditionModel, EulerDiscreteScheduler
+from diffusers.utils import load_image
+
 from PIL import Image
 
 from huggingface_hub import hf_hub_download
@@ -49,7 +51,7 @@ def preprocess_image(image_path):
     return image
 
 pose_image_path = "pose_1.png"
-pose_image = preprocess_image(pose_image_path)
+pose_image = load_image(pose_image_path)
 
 print(f"SETUP ---- F {datetime.now()}");
 
