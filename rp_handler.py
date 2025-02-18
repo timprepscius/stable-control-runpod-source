@@ -83,7 +83,7 @@ def run(job):
 
     print(f"RUN ---- END {datetime.now()}");
 
-    return { "job_results": job_output }
+    return job_output
 
 if __name__ == '__main__':
     runpod.serverless.start({"handler": run})
