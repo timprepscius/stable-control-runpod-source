@@ -80,6 +80,8 @@ def run(job):
     print(f"RUN ---- END {datetime.now()}");
 
     refresh_worker = job_input['restart'] == worker_id or job_input['restart'] == "restart"
+    if refresh_worker:
+        print("WILL REFRESH WORKER!!!!")
 
     return { "refresh_worker": refresh_worker, "job_results": job_output }
 
