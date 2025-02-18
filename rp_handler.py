@@ -38,6 +38,7 @@ from rp_handler_sdxl_light_sdctrl import process
 
 print(f"SETUP ---- 0D {datetime.now()}");
 
+import base64
 def b64of(fileName):
     with open(fileName, "rb") as f:
        out_data = f.read()
@@ -50,9 +51,6 @@ def run(job):
 
     job_input = job['input']
     job_id = job['id']
-
-    if job_input['restart'] == worker_id:
-        exit(0)
 
     # Input validation
     validated_input = validate(job_input, INPUT_SCHEMA)
@@ -81,7 +79,9 @@ def run(job):
 
     print(f"RUN ---- END {datetime.now()}");
 
-    return job_output
+    refresh_worker = job_input['restart'] == worker_id
+
+    return { "refresh_worker": refresh_worker, "job_results": job_output }
 
 if __name__ == '__main__':
     runpod.serverless.start({"handler": run})
