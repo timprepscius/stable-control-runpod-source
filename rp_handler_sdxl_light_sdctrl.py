@@ -3,7 +3,7 @@ print(f"SETUP ---- A {datetime.now()}");
 
 import os
 import torch
-from diffusers import ControlNetModel, StableDiffusionXLPipeline, StableDiffusionXLControlNetImg2ImgPipeline, UNet2DConditionModel, EulerDiscreteScheduler
+from diffusers import UniPCMultistepScheduler, ControlNetModel, StableDiffusionXLPipeline, StableDiffusionXLControlNetImg2ImgPipeline, UNet2DConditionModel, EulerDiscreteScheduler
 from PIL import Image
 
 from huggingface_hub import hf_hub_download
@@ -39,6 +39,7 @@ controlnet_pipe = StableDiffusionXLControlNetImg2ImgPipeline.from_pretrained(
     torch_dtype=torch.float16
 ).to(device)
 
+controlnet_pipe.scheduler = UniPCMultistepScheduler.from_config(controlnet_pipe.scheduler.config)
 
 print(f"SETUP ---- E {datetime.now()}");
 
@@ -80,13 +81,10 @@ def process(job_id, job_input):
     posed_images = []
     for generated_image in generated_images:
         results = controlnet_pipe(
-            prompt="t pose for game model rigging",
+            prompt=prompt,
             negative_prompt="",
             image=generated_image,    # The original generated image
             control_image=pose_image, # The extracted pose
-            strength=0.8,             # Controls how much the original image is altered
-            num_inference_steps=30,
-            guidance_scale=8,
             width=job_input['width'],
             height=job_input['height']
         ).images
