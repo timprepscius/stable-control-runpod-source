@@ -25,18 +25,18 @@ sdxl_pipe.scheduler = EulerDiscreteScheduler.from_config(sdxl_pipe.scheduler.con
 
 print(f"SETUP ---- C {datetime.now()}");
 
-controlnet = ControlNetModel.from_pretrained(
-    "thibaud/controlnet-openpose-sdxl-1.0",
-    torch_dtype=torch.float16
-).to(device)
+# controlnet = ControlNetModel.from_pretrained(
+#     "thibaud/controlnet-openpose-sdxl-1.0",
+#     torch_dtype=torch.float16
+# ).to(device)
 
-print(f"SETUP ---- CD {datetime.now()}");
+# print(f"SETUP ---- CD {datetime.now()}");
 
-controlnet_pipe = StableDiffusionXLControlNetImg2ImgPipeline.from_pretrained(
-    "stabilityai/stable-diffusion-xl-base-1.0",
-    controlnet=controlnet,
-    torch_dtype=torch.float16
-).to(device)
+# controlnet_pipe = StableDiffusionXLControlNetImg2ImgPipeline.from_pretrained(
+#     "stabilityai/stable-diffusion-xl-base-1.0",
+#     controlnet=controlnet,
+#     torch_dtype=torch.float16
+# ).to(device)
 
 
 print(f"SETUP ---- E {datetime.now()}");
@@ -72,32 +72,32 @@ def process(job_id, job_input):
         sample.save(output_path)
         output_paths.append(output_path)
 
-    print(f"RUN ---- C {datetime.now()}");
+    # print(f"RUN ---- C {datetime.now()}");
 
-    posed_images = []
-    for generated_image in generated_images:
-        results = controlnet_pipe(
-            prompt=prompt,
-            negative_prompt=negative_prompt,
-            image=generated_image,    # The original generated image
-            control_image=pose_image, # The extracted pose
-            strength=0.8,             # Controls how much the original image is altered
-            num_inference_steps=30,
-            guidance_scale=job_input['guidance_scale'],
-            width=job_input['width'],
-            height=job_input['height']
-        ).images
+    # posed_images = []
+    # for generated_image in generated_images:
+    #     results = controlnet_pipe(
+    #         prompt=prompt,
+    #         negative_prompt=negative_prompt,
+    #         image=generated_image,    # The original generated image
+    #         control_image=pose_image, # The extracted pose
+    #         strength=0.8,             # Controls how much the original image is altered
+    #         num_inference_steps=30,
+    #         guidance_scale=job_input['guidance_scale'],
+    #         width=job_input['width'],
+    #         height=job_input['height']
+    #     ).images
         
-        print(f"RUN ---- D {datetime.now()}");
+    #     print(f"RUN ---- D {datetime.now()}");
 
-        for result in results:
-            posed_images.append(result)
+    #     for result in results:
+    #         posed_images.append(result)
 
-    for i, sample in enumerate(posed_images):
-        output_name = f"{job_id}-posed-{i}"
-        output_path = f"/tmp/{output_name}.jpg"
-        sample.save(output_path)
-        output_paths.append(output_path)
+    # for i, sample in enumerate(posed_images):
+    #     output_name = f"{job_id}-posed-{i}"
+    #     output_path = f"/tmp/{output_name}.jpg"
+    #     sample.save(output_path)
+    #     output_paths.append(output_path)
 
     return output_paths
 
