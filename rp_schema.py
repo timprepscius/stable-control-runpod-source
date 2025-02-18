@@ -16,19 +16,19 @@ INPUT_SCHEMA = {
     },
     'width': {
         'type': int,
-        'required': True,
-        'default': None
+        'required': False,
+        'default': 1024
     },
     'height': {
         'type': int,
-        'required': True,
-        'default': None
+        'required': False,
+        'default': 1024
     },
     'guidance_scale': {
         'type': float,
         'required': False,
         'default': 7.5,
-        'constraints': lambda guidance_scale: 0 < guidance_scale < 20
+        'constraints': lambda guidance_scale: 0 <= guidance_scale < 20
     },
     'width': {
         'type': int,
