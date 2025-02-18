@@ -48,7 +48,6 @@ def b64of(fileName):
 def run(job):
     print(f"RUN ---- VERSION 1234");
     print(f"RUN ---- START {datetime.now()}");
-    print(job)
 
     job_input = job['input']
     job_id = job['id']
@@ -57,6 +56,8 @@ def run(job):
     if refresh_worker:
         print("WILL REFRESH WORKER!!!!")
         return { "refresh_worker": refresh_worker, "job_results": [ { "restarted": "true" } ] }
+
+    print(f"WILL NOT REFRESH WORKER - continuing {datetime.now()}")
 
     # Input validation
     validated_input = validate(job_input, INPUT_SCHEMA)
@@ -86,7 +87,7 @@ def run(job):
 
     print(f"RUN ---- END {datetime.now()}");
 
-    return job_output
+    return { "job_results": job_output }
 
 if __name__ == '__main__':
     runpod.serverless.start({"handler": run})
