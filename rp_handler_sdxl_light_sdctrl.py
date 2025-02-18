@@ -13,9 +13,10 @@ print(f"SETUP ---- B {datetime.now()}");
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
+inference_steps = 8
 base = "stabilityai/stable-diffusion-xl-base-1.0"
 repo = "ByteDance/SDXL-Lightning"
-ckpt = "sdxl_lightning_8step_unet.safetensors" # Use the correct ckpt for your step setting!
+ckpt = f"sdxl_lightning_{inference_steps}step_unet.safetensors" # Use the correct ckpt for your step setting!
 
 # Load model.
 unet = UNet2DConditionModel.from_config(base, subfolder="unet").to(device, torch.float16)
@@ -54,16 +55,14 @@ print(f"SETUP ---- E {datetime.now()}");
 def process(job_id, job_input):
     print(f"RUN ---- A {datetime.now()}");
 
-    '''
-    Run inference on the model.
-    Returns output path, width the seed used to generate the image.
-    '''
-
-    print(f"RUN ---- B {datetime.now()}");
-
     prompt = job_input['prompt']
     negative_prompt = job_input['negative_prompt']
-    generated_images = sdxl_pipe(prompt=prompt, negative_prompt=negative_prompt, num_inference_steps=8, guidance_scale=0).images
+    generated_images = sdxl_pipe(
+        prompt=prompt, 
+        negative_prompt=negative_prompt, 
+        num_inference_steps=inference_steps, 
+        guidance_scale=0
+    ).images
 
     output_paths = []
     for i, sample in enumerate(generated_images):
@@ -71,6 +70,8 @@ def process(job_id, job_input):
         output_path = f"/tmp/{output_name}.jpg"
         sample.save(output_path)
         output_paths.append(output_path)
+
+    return output_paths
 
     # print(f"RUN ---- C {datetime.now()}");
 
@@ -99,5 +100,5 @@ def process(job_id, job_input):
     #     sample.save(output_path)
     #     output_paths.append(output_path)
 
-    return output_paths
+    # return output_paths
 
