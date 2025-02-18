@@ -63,7 +63,7 @@ def process(job_id, job_input):
 
     prompt = job_input['prompt']
     negative_prompt = job_input['negative_prompt']
-    generated_images = sdxl_pipe(prompt=prompt, negative_prompt=negative_prompt, num_inference_steps=8).images
+    generated_images = sdxl_pipe(prompt=prompt, negative_prompt=negative_prompt, num_inference_steps=8, guidance_scale=0).images
 
     output_paths = []
     for i, sample in enumerate(generated_images):
