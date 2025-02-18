@@ -1,28 +1,15 @@
 from datetime import datetime
-
 print(f"SETUP ---- A {datetime.now()}");
 
 import os
-
-import runpod
-import io
-#from runpod.serverless.utils import rp_download, rp_upload, rp_cleanup
-from runpod.serverless.utils import rp_cleanup
-from runpod.serverless.utils.rp_validator import validate
-
-from rp_schema import INPUT_SCHEMA
-
-print(f"SETUP ---- B {datetime.now()}");
-
 import torch
 from diffusers import ControlNetModel, StableDiffusionXLPipeline, StableDiffusionXLControlNetImg2ImgPipeline, UNet2DConditionModel, EulerDiscreteScheduler
 from PIL import Image
-import numpy as np
 
 from huggingface_hub import hf_hub_download
 from safetensors.torch import load_file
 
-print(f"SETUP ---- C0 {datetime.now()}");
+print(f"SETUP ---- B {datetime.now()}");
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -36,14 +23,14 @@ unet.load_state_dict(load_file(hf_hub_download(repo, ckpt), device=device))
 sdxl_pipe = StableDiffusionXLPipeline.from_pretrained(base, unet=unet, torch_dtype=torch.float16, variant="fp16").to(device)
 sdxl_pipe.scheduler = EulerDiscreteScheduler.from_config(sdxl_pipe.scheduler.config, timestep_spacing="trailing")
 
-print(f"SETUP ---- C1 {datetime.now()}");
+print(f"SETUP ---- C {datetime.now()}");
 
 controlnet = ControlNetModel.from_pretrained(
     "thibaud/controlnet-openpose-sdxl-1.0",
     torch_dtype=torch.float16
 ).to(device)
 
-print(f"SETUP ---- C2 {datetime.now()}");
+print(f"SETUP ---- CD {datetime.now()}");
 
 controlnet_pipe = StableDiffusionXLControlNetImg2ImgPipeline.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0",
@@ -52,47 +39,25 @@ controlnet_pipe = StableDiffusionXLControlNetImg2ImgPipeline.from_pretrained(
 ).to(device)
 
 
-print(f"SETUP ---- D {datetime.now()}");
-
-def b64of(fileName):
-    with open(out_file, "rb") as f:
-       out_data = f.read()
-
-    return base64.b64encode(out_data).decode("utf-8")
-
+print(f"SETUP ---- E {datetime.now()}");
 
 def preprocess_image(image_path):
     image = Image.open(image_path).convert("RGB")
     image = image.resize((1024, 1024))
     return image
 
-    # image = np.array(image)
-    # image = np.mean(image, axis=2).astype(np.uint8)  # Convert to grayscale (Canny edge input)
-    # image = Image.fromarray(image)
-    # return image
-
 pose_image_path = "pose_1.png"
 pose_image = preprocess_image(pose_image_path)
 
 print(f"SETUP ---- E {datetime.now()}");
 
-
-def process(job):
+def process(job_id, job_input):
     print(f"RUN ---- A {datetime.now()}");
 
     '''
     Run inference on the model.
     Returns output path, width the seed used to generate the image.
     '''
-    job_input = job['input']
-    job_id = job['id']
-
-    # Input validation
-    validated_input = validate(job_input, INPUT_SCHEMA)
-
-    if 'errors' in validated_input:
-        return {"error": validated_input['errors']}
-    validated_input = validated_input['validated_input']
 
     print(f"RUN ---- B {datetime.now()}");
 
@@ -118,9 +83,9 @@ def process(job):
             control_image=pose_image, # The extracted pose
             strength=0.8,             # Controls how much the original image is altered
             num_inference_steps=30,
-            guidance_scale=validated_input['guidance_scale'],
-            width=validated_input['width'],
-            height=validated_input['height']
+            guidance_scale=job_input['guidance_scale'],
+            width=job_input['width'],
+            height=job_input['height']
         ).images
         
         print(f"RUN ---- D {datetime.now()}");
@@ -135,32 +100,4 @@ def process(job):
         output_paths.append(output_path)
 
     return output_paths
-
-def run(job):
-    print(f"RUN ---- START {datetime.now()}");
-
-    result = process(job)
-
-    job_output = []
-
-    for index, img_path in enumerate(result):
-        data = b64of(img_path)
-        # image_url = rp_upload.upload_image(job['id'], img_path, index)
-
-        job_output.append({
-            "image": data,
-            "path": img_path,
-            "parameters": job["input"]
-        })
-
-
-    # Remove downloaded input objects
-    rp_cleanup.clean(['input_objects'])
-
-    print(f"RUN ---- END {datetime.now()}");
-
-    return job_output
-
-if __name__ == '__main__':
-    runpod.serverless.start({"handler": run})
 
