@@ -1,6 +1,15 @@
 from datetime import datetime
 
+print(f"SETUP ---- 0 {datetime.now()}");
+
+os.system("git pull")
+
 print(f"SETUP ---- A {datetime.now()}");
+
+import uuid
+
+worker_id = str(uuid.uuid4());
+print(worker_id)
 
 import os
 
@@ -86,6 +95,9 @@ def process(job):
     '''
     job_input = job['input']
     job_id = job['id']
+
+    if job_input['restart'] == worker_id:
+        exit(0)
 
     # Input validation
     validated_input = validate(job_input, INPUT_SCHEMA)

@@ -42,4 +42,9 @@ INPUT_SCHEMA = {
         'default': 1024,
         'constraints': lambda height: height in [128, 256, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960, 1024]
     },
+    'restart': {
+        'type': str,
+        'required': False,
+        'default': None
+    },
 }
