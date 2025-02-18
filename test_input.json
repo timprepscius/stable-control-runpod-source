@@ -1,0 +1,12 @@
+{
+     "input": {
+       "seed": 1,
+       "prompt": "full body, cat in a space suit,a concept art icon for league of legends, a digital art logo, illustration, league of legends style icon, inspired by wlop style, 8k, dota 2 style icon, fine details, sharp, very detailed icon, high resolution rpg ability/spell/item icon",
+       "negative_prompt": "low-quality, deformed, text, poorly drawn, multiple",
+       "width": 1024,
+       "height": 768,
+       "guidance_scale": 7.5,
+       "width": 1024,
+       "height": 1024
+     }
+}
