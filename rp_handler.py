@@ -69,11 +69,11 @@ def run(job):
     job_output = []
 
     for index, img_path in enumerate(result):
-        data = b64of(img_path)
+        # data = b64of(img_path)
         # image_url = rp_upload.upload_image(job['id'], img_path, index)
 
         job_output.append({
-            "image": data,
+            # "image": data,
             "path": img_path,
             "parameters": job["input"]
         })
