@@ -46,6 +46,7 @@ def b64of(fileName):
     return base64.b64encode(out_data).decode("utf-8")
 
 def run(job):
+    print(f"RUN ---- VERSION 1234");
     print(f"RUN ---- START {datetime.now()}");
     print(job)
 
