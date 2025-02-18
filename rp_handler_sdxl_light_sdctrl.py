@@ -85,6 +85,7 @@ def process(job_id, job_input):
             negative_prompt="",
             image=generated_image,    # The original generated image
             control_image=pose_image, # The extracted pose
+            guidance_scale=4.0,
             width=job_input['width'],
             height=job_input['height']
         ).images
