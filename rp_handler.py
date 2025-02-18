@@ -52,6 +52,11 @@ def run(job):
     job_input = job['input']
     job_id = job['id']
 
+    refresh_worker = job_input['restart'] == "restart"
+    if refresh_worker:
+        print("WILL REFRESH WORKER!!!!")
+        return { "refresh_worker": refresh_worker, "job_results": [ { "restarted": "true" } ] }
+
     # Input validation
     validated_input = validate(job_input, INPUT_SCHEMA)
 
@@ -73,17 +78,12 @@ def run(job):
             "parameters": job["input"]
         })
 
-
     # Remove downloaded input objects
     rp_cleanup.clean(['input_objects'])
 
     print(f"RUN ---- END {datetime.now()}");
 
-    refresh_worker = job_input['restart'] == worker_id or job_input['restart'] == "restart"
-    if refresh_worker:
-        print("WILL REFRESH WORKER!!!!")
-
-    return { "refresh_worker": refresh_worker, "job_results": job_output }
+    return { "job_results": job_output }
 
 if __name__ == '__main__':
     runpod.serverless.start({"handler": run})
