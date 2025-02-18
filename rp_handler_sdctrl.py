@@ -44,7 +44,7 @@ def process(job_id, job_input):
 
     prompt = job_input['prompt']
     negative_prompt = job_input['negative_prompt']
-    generated_images = pipe(prompt, negative_prompt, image=pose_image).images
+    generated_images = pipe(prompt=prompt, negative_prompt=negative_prompt, image=pose_image).images
 
     output_paths = []
     for i, sample in enumerate(generated_images):
