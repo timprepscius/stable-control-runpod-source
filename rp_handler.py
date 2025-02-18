@@ -55,7 +55,7 @@ controlnet_pipe = StableDiffusionXLControlNetImg2ImgPipeline.from_pretrained(
 print(f"SETUP ---- D {datetime.now()}");
 
 def b64of(fileName):
-    with open(out_file, "rb") as f:
+    with open(fileName, "rb") as f:
        out_data = f.read()
 
     return base64.b64encode(out_data).decode("utf-8")
