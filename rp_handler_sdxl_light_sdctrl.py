@@ -80,13 +80,13 @@ def process(job_id, job_input):
     posed_images = []
     for generated_image in generated_images:
         results = controlnet_pipe(
-            prompt=prompt,
-            negative_prompt=negative_prompt,
+            prompt="t pose for game model rigging",
+            negative_prompt="",
             image=generated_image,    # The original generated image
             control_image=pose_image, # The extracted pose
             strength=0.8,             # Controls how much the original image is altered
             num_inference_steps=30,
-            guidance_scale=job_input['guidance_scale'],
+            guidance_scale=8,
             width=job_input['width'],
             height=job_input['height']
         ).images
@@ -95,6 +95,9 @@ def process(job_id, job_input):
 
         for result in results:
             posed_images.append(result)
+
+
+    posed_images.append(pose_image)
 
     for i, sample in enumerate(posed_images):
         output_name = f"{job_id}-posed-{i}"
