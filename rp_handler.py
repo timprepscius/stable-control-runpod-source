@@ -67,19 +67,17 @@ def run(job):
     validated_input = validated_input['validated_input']
 
     print(f"RUN ---- PROCESS BEGIN {datetime.now()}");
-    #result = process(job_id, validated_input)
+    result = process(job_id, validated_input)
     print(f"RUN ---- PROCESS END {datetime.now()}");
-
-    result = [ "hello" ]
 
     job_output = []
 
     for index, img_path in enumerate(result):
-        # data = b64of(img_path)
+        data = b64of(img_path)
         # image_url = rp_upload.upload_image(job['id'], img_path, index)
 
         job_output.append({
-            # "image": data,
+            "image": data,
             "path": img_path,
             "parameters": validated_input
         })
