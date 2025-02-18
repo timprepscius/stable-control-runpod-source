@@ -48,7 +48,7 @@ def process(job_id, job_input):
 
     output_paths = []
     for i, sample in enumerate(generated_images):
-        output_path = f"/tmp/generated-{i}.png"
+        output_path = f"/tmp/generated-{job_id}-{i}.png"
         sample.save(output_path)
         output_paths.append(output_path)
 
