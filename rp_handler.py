@@ -9,7 +9,7 @@ print(f"SETUP ---- A {datetime.now()}");
 import uuid
 
 worker_id = str(uuid.uuid4());
-print(worker_id)
+print(f"WORKER_ID: {worker_id}")
 
 import os
 
