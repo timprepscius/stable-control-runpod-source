@@ -64,7 +64,9 @@ def run(job):
         return {"error": validated_input['errors']}
     validated_input = validated_input['validated_input']
 
+    print(f"RUN ---- PROCESS BEGIN {datetime.now()}");
     result = process(job_id, validated_input)
+    print(f"RUN ---- PROCESS END {datetime.now()}");
 
     job_output = []
 
