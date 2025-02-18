@@ -50,7 +50,7 @@ def preprocess_image(image_path):
 pose_image_path = "pose_1.png"
 pose_image = preprocess_image(pose_image_path)
 
-print(f"SETUP ---- E {datetime.now()}");
+print(f"SETUP ---- F {datetime.now()}");
 
 def process(job_id, job_input):
     print(f"RUN ---- A {datetime.now()}");
@@ -78,33 +78,3 @@ def process(job_id, job_input):
     print(f"RUN ---- C {datetime.now()}");
 
     return output_paths
-
-    # print(f"RUN ---- C {datetime.now()}");
-
-    # posed_images = []
-    # for generated_image in generated_images:
-    #     results = controlnet_pipe(
-    #         prompt=prompt,
-    #         negative_prompt=negative_prompt,
-    #         image=generated_image,    # The original generated image
-    #         control_image=pose_image, # The extracted pose
-    #         strength=0.8,             # Controls how much the original image is altered
-    #         num_inference_steps=30,
-    #         guidance_scale=job_input['guidance_scale'],
-    #         width=job_input['width'],
-    #         height=job_input['height']
-    #     ).images
-        
-    #     print(f"RUN ---- D {datetime.now()}");
-
-    #     for result in results:
-    #         posed_images.append(result)
-
-    # for i, sample in enumerate(posed_images):
-    #     output_name = f"{job_id}-posed-{i}"
-    #     output_path = f"/tmp/{output_name}.jpg"
-    #     sample.save(output_path)
-    #     output_paths.append(output_path)
-
-    # return output_paths
-

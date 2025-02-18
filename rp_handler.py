@@ -75,7 +75,7 @@ def run(job):
         job_output.append({
             # "image": data,
             "path": img_path,
-            "parameters": job["input"]
+            "parameters": validated_input
         })
 
     # Remove downloaded input objects
