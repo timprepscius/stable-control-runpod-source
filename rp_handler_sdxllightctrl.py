@@ -23,6 +23,7 @@ inference_steps = 8
 base = "stabilityai/stable-diffusion-xl-base-1.0"
 repo = "ByteDance/SDXL-Lightning"
 ckpt = f"sdxl_lightning_{inference_steps}step_unet.safetensors" # Use the correct ckpt for your step setting!
+device = "cuda"
 
 # Load model.
 unet = UNet2DConditionModel.from_config(base, subfolder="unet").to(device, torch.float16)
