@@ -35,6 +35,7 @@ pipe.vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_
 
 # Set the scheduler
 pipe.to(device)
+sdxl_pipe = pipe
 
 def process(job_id, job_input):
     print(f"RUN ---- A {datetime.now()}");
