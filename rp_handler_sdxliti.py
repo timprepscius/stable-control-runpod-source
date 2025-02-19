@@ -39,7 +39,7 @@ vae=AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=t
 euler_a = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="scheduler")
 # sdxl_pipe.scheduler = EulerDiscreteScheduler.from_config(sdxl_pipe.scheduler.config, timestep_spacing="trailing")
 
-modify_pose_pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
+sdxl_pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
     base, 
     unet=unet,
     vae=vae, 
