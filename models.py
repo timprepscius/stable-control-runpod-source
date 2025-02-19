@@ -40,6 +40,7 @@ def make_sdxl_ctrl_pose(inference_steps=60, device=device):
         pipe.to(device)
 
     pipe.inference_steps = inference_steps
+    pipe.override_guidance_scale = None
 
     return pipe
 
@@ -100,7 +101,7 @@ def make_sdxli_ti_pose(inference_steps=8, device=device):
 
     return pipe
 
-def make_sdxl_ti_pose(inference_steps=40, device=device):
+def make_sdxl_ti_pose(inference_steps=60, device=device):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
 
     pose_adapter = T2IAdapter.from_pretrained(
@@ -123,6 +124,7 @@ def make_sdxl_ti_pose(inference_steps=40, device=device):
     )  
 
     pipe.inference_steps = inference_steps  
+    pipe.override_guidance_scale = None
 
     if device is not None:
         pipe.to(device)
@@ -158,8 +160,9 @@ def make_sdxl_ti_sketch_pose(inference_steps=40):
         variant="fp16"
     )    
 
-    pipe.inference_steps = inference_steps  
-
+    pipe.inference_steps = inference_steps
+    pipe.override_guidance_scale = None
+    
     if device is not None:
         pipe.to(device)
 
