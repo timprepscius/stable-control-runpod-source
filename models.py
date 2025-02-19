@@ -19,6 +19,29 @@ def load_test():
 
     return test_input_json
 
+def make_sdxl_ctrl_pose(inference_steps=60, device=device):
+    base = "stabilityai/stable-diffusion-xl-base-1.0"
+
+    controlnet = ControlNetModel.from_pretrained(
+        "thibaud/controlnet-openpose-sdxl-1.0", torch_dtype=torch.float16
+    )
+
+    # Load SDXL pipeline
+    pipe = StableDiffusionXLControlNetPipeline.from_pretrained(
+        base, controlnet=controlnet, torch_dtype=torch.float16
+    )
+
+    # Use a VAE for improved quality (optional but recommended for SDXL)
+    pipe.vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
+
+    # Set the scheduler
+    pipe.scheduler = UniPCMultistepScheduler.from_config(pipe.scheduler.config)
+    pipe.to(device)
+
+    pipe.inference_steps = inference_steps
+
+    return pipe
+
 def make_sdxli(inference_steps=8, device=device):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
     repo = "ByteDance/SDXL-Lightning"

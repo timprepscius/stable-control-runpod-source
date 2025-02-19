@@ -7,31 +7,14 @@ import os
 print(f"SETUP ---- B {datetime.now()}");
 
 import torch
-from diffusers import ControlNetModel, StableDiffusionXLControlNetPipeline, AutoencoderKL, UniPCMultistepScheduler
 from diffusers.utils import load_image
-from PIL import Image
-import numpy as np
+import models
 
 print(f"SETUP ---- C {datetime.now()}");
 
-# Load ControlNet model
-controlnet = ControlNetModel.from_pretrained(
-    "thibaud/controlnet-openpose-sdxl-1.0", torch_dtype=torch.float16
-)
-
-# Load SDXL pipeline
-pipe = StableDiffusionXLControlNetPipeline.from_pretrained(
-    "stabilityai/stable-diffusion-xl-base-1.0", controlnet=controlnet, torch_dtype=torch.float16
-)
-
-# Use a VAE for improved quality (optional but recommended for SDXL)
-pipe.vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
-
-# Set the scheduler
-pipe.scheduler = UniPCMultistepScheduler.from_config(pipe.scheduler.config)
-pipe.to("cuda")
-
-print(f"SETUP ---- D {datetime.now()}");
+pipe = models.make_sdxl_ctrl_pose()
+inference_steps = pipe.inference_steps
+override_guidance_scale = None
 
 pose_image_path = "pose_1.png"
 pose_image = load_image(pose_image_path)
@@ -44,11 +27,18 @@ def process(job_id, job_input):
 
     prompt = job_input['prompt']
     negative_prompt = job_input['negative_prompt']
+    pose_image_sized = pose_image.resize((job_input['width'], job_input['height']))
+    guidance_scale = job_input['guidance_scale']
+
     generated_images = pipe(
         prompt=prompt, 
         negative_prompt=negative_prompt, 
+        num_inference_steps=inference_steps, 
         image=pose_image,
-        guidance_scale=job_input['guidance_scale']
+        guidance_scale=guidance_scale if override_guidance_scale is None else override_guidance_scale,
+        image=pose_image_sized,
+        width=job_input['width'],
+        height=job_input['height']
     ).images
 
     output_paths = []
@@ -58,5 +48,9 @@ def process(job_id, job_input):
         output_paths.append(output_path)
 
     return output_paths
+
+if __name__ == '__main__':
+    test = models.load_test()
+    process(test['id'], test['input'])
 
 
