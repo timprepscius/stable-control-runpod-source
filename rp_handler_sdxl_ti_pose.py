@@ -50,3 +50,7 @@ def process(job_id, job_input):
         output_paths.append(output_path)
 
     return output_paths
+
+if __name__ == '__main__':
+    test = models.load_test()
+    process(test['id'], test['input'])

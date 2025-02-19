@@ -3,6 +3,7 @@ print(f"SETUP ---- A {datetime.now()}");
 
 import os
 import torch
+import models
 from diffusers.utils import load_image
 
 print(f"SETUP ---- B {datetime.now()}");
