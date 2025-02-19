@@ -36,18 +36,18 @@ pose_adapter = T2IAdapter.from_pretrained(
 print(f"SETUP ---- C2 {datetime.now()}");
 
 vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
-euler_a = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="scheduler")
+scheduler = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="scheduler")
+# scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
 
 pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
     base, 
     unet=unet,
+    vae=vae,
+    scheduler=scheduler,
     adapter=pose_adapter, 
     torch_dtype=torch.float16, 
     variant="fp16"
 ).to(device)
-
-pipe.vae = vae
-pipe.scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
 
 sdxl_pipe = pipe
 
@@ -71,7 +71,7 @@ def process(job_id, job_input):
         negative_prompt=negative_prompt, 
         num_inference_steps=inference_steps, 
         guidance_scale=0,
-        image=pose_image_sized,    # The original generated image
+        image=pose_image_sized,
         width=job_input['width'],
         height=job_input['height']
     ).images
