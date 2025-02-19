@@ -11,7 +11,7 @@ from safetensors.torch import load_file
 
 device = "cuda"
 
-def make_sdxli(inference_steps=8):
+def make_sdxli(inference_steps=8, device=device):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
     repo = "ByteDance/SDXL-Lightning"
     ckpt = f"sdxl_lightning_{inference_steps}step_unet.safetensors" # Use the correct ckpt for your step setting!
@@ -24,7 +24,7 @@ def make_sdxli(inference_steps=8):
 
     return pipe
 
-def make_sdxli_ti_pose(inference_steps=8):
+def make_sdxli_ti_pose(inference_steps=8, device=device):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
     repo = "ByteDance/SDXL-Lightning"
     ckpt = f"sdxl_lightning_{inference_steps}step_unet.safetensors" # Use the correct ckpt for your step setting!
@@ -52,11 +52,11 @@ def make_sdxli_ti_pose(inference_steps=8):
         adapter=pose_adapter, 
         torch_dtype=torch.float16, 
         variant="fp16"
-    )
+    ).to(device)
 
     return pipe
 
-def make_sdxl_ti_pose(inference_steps=8):
+def make_sdxl_ti_pose(inference_steps=8, device=device):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
 
     pose_adapter = T2IAdapter.from_pretrained(
