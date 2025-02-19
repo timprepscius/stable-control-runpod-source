@@ -33,7 +33,7 @@ sdxl_pipe.scheduler = EulerDiscreteScheduler.from_config(sdxl_pipe.scheduler.con
 print(f"SETUP ---- C0 {datetime.now()}");
 
 reference_adapter = T2IAdapter.from_pretrained(
-    "TencentARC/t2i-adapter-style-sdxl-1.0", 
+    "TencentARC/t2i-adapter-sketch-sdxl-1.0", 
     torch_dtype=torch.float16
 ).to(device)
 
