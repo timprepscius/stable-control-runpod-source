@@ -55,13 +55,13 @@ sdxl_pipe = pipe.vae
 print(f"SETUP ---- E {datetime.now()}");
 pose_image_path = "pose_1.png"
 pose_image = load_image(pose_image_path)
-pose_image_sized = pose_image.resize((job_input['width'], job_input['height']))
 
 print(f"SETUP ---- F {datetime.now()}");
 
 def process(job_id, job_input):
     print(f"RUN ---- A {datetime.now()}");
 
+    pose_image_sized = pose_image.resize((job_input['width'], job_input['height']))
     prompt = job_input['prompt']
     negative_prompt = job_input['negative_prompt']
     print(f"RUN WITH prompt:{prompt}, negative_prompt:{negative_prompt}, inference_steps:{inference_steps}")
