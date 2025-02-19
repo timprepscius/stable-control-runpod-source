@@ -28,7 +28,6 @@ def process(env, job_id, job_input):
     prompt = job_input['prompt']
     negative_prompt = job_input['negative_prompt']
     guidance_scale = job_input['guidance_scale']
-    print(f"RUN WITH prompt:{prompt}, negative_prompt:{negative_prompt}, inference_steps:{inference_steps}")
 
     generated_images = pipe(
         prompt=prompt, 
