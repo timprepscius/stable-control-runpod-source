@@ -4,7 +4,7 @@ import os
 import torch
 
 from diffusers import MultiAdapter, StableDiffusionXLAdapterPipeline, T2IAdapter, EulerAncestralDiscreteScheduler, AutoencoderKL
-from diffusers import UniPCMultistepScheduler, ControlNetModel, StableDiffusionXLPipeline, UNet2DConditionModel, EulerDiscreteScheduler
+from diffusers import UniPCMultistepScheduler, ControlNetModel, StableDiffusionXLPipeline, StableDiffusionXLControlNetPipeline, UNet2DConditionModel, EulerDiscreteScheduler
 from huggingface_hub import hf_hub_download
 from safetensors.torch import load_file
 
