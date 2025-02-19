@@ -43,6 +43,7 @@ def make_sdxl_ctrl_pose(inference_steps=60, device=device):
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
+    pipe.human_name = "sdxl_ctrl_pose"
 
     return pipe
 
@@ -74,6 +75,7 @@ def make_sdxli_ctrl_pose(inference_steps=60, device=device):
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
+    pipe.human_name = "sdxl_lightning_ctrl_pose"
 
     return pipe    
 
@@ -90,9 +92,11 @@ def make_sdxli(inference_steps=8, device=device):
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = 0
+    pipe.human_name = "sdxl_lightning"
 
     if device is not None:
         pipe.to(device)
+
 
     return pipe
 
@@ -128,6 +132,7 @@ def make_sdxli_ti_pose(inference_steps=8, device=device):
 
     pipe.inference_steps = inference_steps  
     pipe.override_guidance_scale = 0
+    pipe.human_name = "sdxl_lightning_ti_pose"
 
     if device is not None:
         pipe.to(device)
@@ -158,6 +163,7 @@ def make_sdxl_ti_pose(inference_steps=60, device=device):
 
     pipe.inference_steps = inference_steps  
     pipe.override_guidance_scale = None
+    pipe.human_name = "sdxl_ti_pose"
 
     if device is not None:
         pipe.to(device)
@@ -195,6 +201,7 @@ def make_sdxl_ti_sketch_pose(inference_steps=40):
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
+    pipe.human_name = "sdxl_ti_sketch_pose"
 
     if device is not None:
         pipe.to(device)
