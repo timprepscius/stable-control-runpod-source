@@ -10,6 +10,7 @@ from diffusers.utils import load_image
 print(f"SETUP ---- B {datetime.now()}");
 
 sdxl_pipe = models.make_sdxl_ti_pose()
+inference_steps = sdxl_pipe.inference_steps
 
 pose_image_path = "pose_1.png"
 pose_image = load_image(pose_image_path)

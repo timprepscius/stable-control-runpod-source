@@ -22,6 +22,8 @@ def make_sdxli(inference_steps=8, device=device):
     pipe = StableDiffusionXLPipeline.from_pretrained(base, unet=unet, torch_dtype=torch.float16, variant="fp16").to(device)
     pipe.scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
 
+    pipe.inference_steps = inference_steps  
+
     return pipe
 
 def make_sdxli_ti_pose(inference_steps=8, device=device):
@@ -54,9 +56,11 @@ def make_sdxli_ti_pose(inference_steps=8, device=device):
         variant="fp16"
     ).to(device)
 
+    pipe.inference_steps = inference_steps  
+
     return pipe
 
-def make_sdxl_ti_pose(inference_steps=8, device=device):
+def make_sdxl_ti_pose(inference_steps=40, device=device):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
 
     pose_adapter = T2IAdapter.from_pretrained(
@@ -76,9 +80,13 @@ def make_sdxl_ti_pose(inference_steps=8, device=device):
         scheduler=scheduler, 
         torch_dtype=torch.float16, 
         variant="fp16"
-    ).to(device)    
+    ).to(device)  
 
-def make_sdxl_ti_sketch_pose(inference_steps=8):
+    pipe.inference_steps = inference_steps  
+
+    return pipe
+
+def make_sdxl_ti_sketch_pose(inference_steps=40):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
 
     reference_adapter = T2IAdapter.from_pretrained(
@@ -106,4 +114,9 @@ def make_sdxl_ti_sketch_pose(inference_steps=8):
         torch_dtype=torch.float16, 
         variant="fp16"
     ).to(device)    
+
+    pipe.inference_steps = inference_steps  
+
+    return pipe
+
 
