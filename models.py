@@ -11,6 +11,14 @@ from safetensors.torch import load_file
 
 device = "cuda"
 
+def load_test():
+    with open("test_input.json", "r") as f:
+        test_input_json = json.load(f)
+
+    test_input_json["id"] = "test_id"
+
+    return test_input_json
+
 def make_sdxli(inference_steps=8, device=device):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
     repo = "ByteDance/SDXL-Lightning"
