@@ -40,7 +40,7 @@ reference_adapter = T2IAdapter.from_pretrained(
 print(f"SETUP ---- C1 {datetime.now()}");
 
 pose_adapter = T2IAdapter.from_pretrained(
-    "TencentARC/t2i-adapter-pose-sdxl-1.0", 
+    "TencentARC/t2i-adapter-openpose-sdxl-1.0", 
     torch_dtype=torch.float16
 ).to(device)
 
