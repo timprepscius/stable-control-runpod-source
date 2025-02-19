@@ -52,7 +52,7 @@ euler_a = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="sched
 modify_pose_pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
     base, 
     vae=vae, 
-    adapter=[reference_adapter, pose_adapter], 
+    adapter=pose_adapter, 
     scheduler=euler_a, 
     torch_dtype=torch.float16, 
     variant="fp16"
