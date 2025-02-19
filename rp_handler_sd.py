@@ -2,25 +2,39 @@ from datetime import datetime
 print(f"SETUP ---- A {datetime.now()}");
 
 import os
-import torch
+import sys
 from diffusers.utils import load_image
 import models
 
-sdxl_pipe = models.make_sdxli()
-inference_steps = sdxl_pipe.inference_steps
+def make_env(model_type="sdxl"):
+    print(f"SETUP ---- B {datetime.now()}");
+
+    pipe = models.make(model_type)
+
+    pose_image_path = "pose_1.png"
+    pose_image = load_image(pose_image_path)
+
+    print(f"SETUP ---- F {datetime.now()}");
+
+    return { "pipe": pipe, "pose_image": pose_image }
+
 
 def process(job_id, job_input):
     print(f"RUN ---- A {datetime.now()}");
 
+    pipe = env["pipe"]
+    pose_image = env["pose_image"]
+
     prompt = job_input['prompt']
     negative_prompt = job_input['negative_prompt']
+    guidance_scale = job_input['guidance_scale']
     print(f"RUN WITH prompt:{prompt}, negative_prompt:{negative_prompt}, inference_steps:{inference_steps}")
 
-    generated_images = sdxl_pipe(
+    generated_images = pipe(
         prompt=prompt, 
         negative_prompt=negative_prompt, 
-        num_inference_steps=inference_steps, 
-        guidance_scale=0,
+        num_inference_steps=pipe.inference_steps, 
+        guidance_scale=guidance_scale if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
         width=job_input['width'],
         height=job_input['height']
     ).images
@@ -38,4 +52,7 @@ def process(job_id, job_input):
 
 if __name__ == '__main__':
     test = models.load_test()
-    process(test['id'], test['input'])
+    
+    model_type = "sdxl" if len(sys.argv) < 2 else sys.argv[-1]
+    env = make_env(model_type) 
+    process(env, test['id'], test['input'])

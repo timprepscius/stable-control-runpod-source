@@ -44,6 +44,37 @@ def make_sdxl_ctrl_pose(inference_steps=60, device=device):
 
     return pipe
 
+def make_sdxli_ctrl_pose(inference_steps=60, device=device):
+    base = "stabilityai/stable-diffusion-xl-base-1.0"
+    repo = "ByteDance/SDXL-Lightning"
+    ckpt = f"sdxl_lightning_{inference_steps}step_unet.safetensors" # Use the correct ckpt for your step setting!
+
+    # Load model.
+    unet = UNet2DConditionModel.from_config(base, subfolder="unet").to(device, torch.float16)
+    unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
+
+    controlnet = ControlNetModel.from_pretrained(
+        "thibaud/controlnet-openpose-sdxl-1.0", torch_dtype=torch.float16
+    )
+
+    # Load SDXL pipeline
+    pipe = StableDiffusionXLControlNetPipeline.from_pretrained(
+        base, unet=unet, controlnet=controlnet, torch_dtype=torch.float16
+    )
+
+    # Use a VAE for improved quality (optional but recommended for SDXL)
+    pipe.vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
+
+    # Set the scheduler
+    pipe.scheduler = UniPCMultistepScheduler.from_config(pipe.scheduler.config)
+    if device is not None:
+        pipe.to(device)
+
+    pipe.inference_steps = inference_steps
+    pipe.override_guidance_scale = None
+
+    return pipe    
+
 def make_sdxli(inference_steps=8, device=device):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
     repo = "ByteDance/SDXL-Lightning"
@@ -80,7 +111,7 @@ def make_sdxli_ti_pose(inference_steps=8, device=device):
     print(f"SETUP ---- C2 {datetime.now()}");
 
     vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
-    scheduler = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="scheduler")
+    scheduler = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="scheduler", timestep_spacing="trailing")
     # scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
 
     pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
@@ -162,10 +193,26 @@ def make_sdxl_ti_sketch_pose(inference_steps=40):
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
-    
+
     if device is not None:
         pipe.to(device)
 
     return pipe
+
+def make_ti_pose(model_type, device=device):
+    if model_type == "sdxl":
+        return model_sdxl_ti_pose(device=device)
+    if model_type == "sdxl-lightning"
+        return model_sdxli_ti_pose(device=device)
+
+    return None
+
+def make_ctrl_pose(model_type, device=device):
+    if model_type == "sdxl":
+        return model_sdxl_ctrl_pose(device=device)
+    if model_type == "sdxl-lightning"
+        return model_sdxli_ctrl_pose(device=device)
+
+    return None
 
 

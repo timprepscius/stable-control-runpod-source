@@ -35,8 +35,10 @@ print(f"SETUP ---- 0C {datetime.now()}");
 # from rp_handler_sdxllightctrl import process
 # from rp_handler_sdxli_sdxlti import process
 # from rp_handler_sdxl_light_sdctrl import process
-from rp_handler_sdxl_ti_pose import process
+import rp_handler_sd_ti_pose as handler
 # from rp_handler_sdxli import process
+
+env = handler.make_env()
 
 #######################################
 #######################################
@@ -72,7 +74,7 @@ def run(job):
     validated_input = validated_input['validated_input']
 
     print(f"RUN ---- PROCESS BEGIN {datetime.now()}");
-    result = process(job_id, validated_input)
+    result = process(env, job_id, validated_input)
     print(f"RUN ---- PROCESS END {datetime.now()}");
 
     job_output = []

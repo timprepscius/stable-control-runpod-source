@@ -9,7 +9,7 @@ from diffusers.utils import load_image
 
 print(f"SETUP ---- B {datetime.now()}");
 
-sdxl_pipe = models.make_sdxl_ti_pose()
+sdxl_pipe = models.make_sdxli_ti_pose()
 inference_steps = sdxl_pipe.inference_steps
 override_guidance_scale = None
 if sdxl_pipe.override_guidance_scale is not None:

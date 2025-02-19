@@ -3,27 +3,31 @@ from datetime import datetime
 print(f"SETUP ---- A {datetime.now()}");
 
 import os
+import sys
 
-print(f"SETUP ---- B {datetime.now()}");
-
-import torch
 from diffusers.utils import load_image
 import models
 
 print(f"SETUP ---- C {datetime.now()}");
 
-pipe = models.make_sdxl_ctrl_pose()
-inference_steps = pipe.inference_steps
-override_guidance_scale = None
+def make_env(model_type="sdxl"):
+    print(f"SETUP ---- B {datetime.now()}");
 
-pose_image_path = "pose_1.png"
-pose_image = load_image(pose_image_path)
+    pipe = models.make_sdxl_ctrl_pose()
 
-print(f"SETUP ---- E {datetime.now()}");
+    pose_image_path = "pose_1.png"
+    pose_image = load_image(pose_image_path)
+
+    print(f"SETUP ---- F {datetime.now()}");
+
+    return { "pipe": pipe, "pose_image": pose_image }
 
 
-def process(job_id, job_input):
+def process(env, job_id, job_input):
     print(f"RUN ---- A {datetime.now()}");
+
+    pipe = env["pipe"]
+    pose_image = env["pose_image"]
 
     prompt = job_input['prompt']
     negative_prompt = job_input['negative_prompt']
@@ -34,7 +38,7 @@ def process(job_id, job_input):
         prompt=prompt, 
         negative_prompt=negative_prompt, 
         num_inference_steps=inference_steps, 
-        guidance_scale=guidance_scale if override_guidance_scale is None else override_guidance_scale,
+        guidance_scale=guidance_scale if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
         image=pose_image_sized,
         width=job_input['width'],
         height=job_input['height']
@@ -50,6 +54,9 @@ def process(job_id, job_input):
 
 if __name__ == '__main__':
     test = models.load_test()
-    process(test['id'], test['input'])
+
+    model_type = "sdxl" if len(sys.argv) < 2 else sys.argv[-1]
+    env = make_env(model_type) 
+    process(env, test['id'], test['input'])
 
 
