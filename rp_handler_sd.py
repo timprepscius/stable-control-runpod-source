@@ -19,7 +19,7 @@ def make_env(model_type="sdxl"):
     return { "pipe": pipe, "pose_image": pose_image }
 
 
-def process(job_id, job_input):
+def process(env, job_id, job_input):
     print(f"RUN ---- A {datetime.now()}");
 
     pipe = env["pipe"]
@@ -52,7 +52,7 @@ def process(job_id, job_input):
 
 if __name__ == '__main__':
     test = models.load_test()
-    
+
     model_type = "sdxl" if len(sys.argv) < 2 else sys.argv[-1]
     env = make_env(model_type) 
     process(env, test['id'], test['input'])
