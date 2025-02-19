@@ -3,7 +3,7 @@ print(f"SETUP ---- A {datetime.now()}");
 
 import os
 import torch
-from diffusers import StableDiffusionXLAdapterPipeline, T2IAdapter, EulerAncestralDiscreteScheduler, AutoencoderKL
+from diffusers import MultiAdapter, StableDiffusionXLAdapterPipeline, T2IAdapter, EulerAncestralDiscreteScheduler, AutoencoderKL
 from diffusers import UniPCMultistepScheduler, ControlNetModel, StableDiffusionXLPipeline, UNet2DConditionModel, EulerDiscreteScheduler
 from diffusers.utils import load_image
 
@@ -52,7 +52,7 @@ euler_a = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="sched
 modify_pose_pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
     base, 
     vae=vae, 
-    adapter=pose_adapter, 
+    adapter=MultiAdapter([reference_adapter, pose_adapter]), 
     scheduler=euler_a, 
     torch_dtype=torch.float16, 
     variant="fp16"
