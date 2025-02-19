@@ -42,7 +42,6 @@ pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
     base, 
     unet=unet,
     adapter=pose_adapter, 
-    # scheduler=euler_a, 
     torch_dtype=torch.float16, 
     variant="fp16"
 ).to(device)
@@ -61,9 +60,10 @@ print(f"SETUP ---- F {datetime.now()}");
 def process(job_id, job_input):
     print(f"RUN ---- A {datetime.now()}");
 
-    pose_image_sized = pose_image.resize((job_input['width'], job_input['height']))
     prompt = job_input['prompt']
     negative_prompt = job_input['negative_prompt']
+    pose_image_sized = pose_image.resize((job_input['width'], job_input['height']))
+
     print(f"RUN WITH prompt:{prompt}, negative_prompt:{negative_prompt}, inference_steps:{inference_steps}")
 
     generated_images = sdxl_pipe(
