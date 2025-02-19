@@ -49,7 +49,6 @@ def process(job_id, job_input):
         negative_prompt=negative_prompt, 
         num_inference_steps=inference_steps, 
         guidance_scale=0,
-        image=pose_image_sized,    # The original generated image
         width=job_input['width'],
         height=job_input['height']
     ).images
