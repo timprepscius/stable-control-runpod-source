@@ -47,7 +47,7 @@ pose_adapter = T2IAdapter.from_pretrained(
 print(f"SETUP ---- C2 {datetime.now()}");
 
 vae=AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
-euler_a = EulerAncestralDiscreteScheduler.from_pretrained(model_id, subfolder="scheduler")
+euler_a = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="scheduler")
 
 modify_pose_pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
     base, 
