@@ -35,23 +35,27 @@ pose_adapter = T2IAdapter.from_pretrained(
 
 print(f"SETUP ---- C2 {datetime.now()}");
 
-vae=AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
+vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
 euler_a = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="scheduler")
-# sdxl_pipe.scheduler = EulerDiscreteScheduler.from_config(sdxl_pipe.scheduler.config, timestep_spacing="trailing")
 
-sdxl_pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
+pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
     base, 
     unet=unet,
-    vae=vae, 
     adapter=pose_adapter, 
-    scheduler=euler_a, 
+    # scheduler=euler_a, 
     torch_dtype=torch.float16, 
     variant="fp16"
 ).to(device)
 
+pipe.scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
+pipe.vae = vae
+
+sdxl_pipe = pipe.vae
+
 print(f"SETUP ---- E {datetime.now()}");
 pose_image_path = "pose_1.png"
 pose_image = load_image(pose_image_path)
+pose_image_sized = pose_image.resize((job_input['width'], job_input['height']))
 
 print(f"SETUP ---- F {datetime.now()}");
 
@@ -61,8 +65,6 @@ def process(job_id, job_input):
     prompt = job_input['prompt']
     negative_prompt = job_input['negative_prompt']
     print(f"RUN WITH prompt:{prompt}, negative_prompt:{negative_prompt}, inference_steps:{inference_steps}")
-
-    pose_image_sized = pose_image.resize((job_input['width'], job_input['height']))
 
     generated_images = sdxl_pipe(
         prompt=prompt, 
