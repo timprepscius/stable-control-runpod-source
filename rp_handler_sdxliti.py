@@ -41,16 +41,16 @@ euler_a = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="sched
 pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
     base, 
     unet=unet,
-    vae=vae,
     adapter=pose_adapter, 
     # scheduler=euler_a, 
     torch_dtype=torch.float16, 
     variant="fp16"
 ).to(device)
 
+pipe.vae = vae
 pipe.scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
 
-sdxl_pipe = pipe.vae
+sdxl_pipe = pipe
 
 print(f"SETUP ---- E {datetime.now()}");
 pose_image_path = "pose_1.png"
