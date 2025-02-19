@@ -4,12 +4,12 @@ print(f"SETUP ---- A {datetime.now()}");
 import os
 import torch
 
-from models import make_generate_sdxliti
+import models
 from diffusers.utils import load_image
 
 print(f"SETUP ---- B {datetime.now()}");
 
-sdxl_pipe = make_sdxl_ti_pose().to(device)
+sdxl_pipe = models.make_sdxl_ti_pose().to(device)
 
 pose_image_path = "pose_1.png"
 pose_image = load_image(pose_image_path)
