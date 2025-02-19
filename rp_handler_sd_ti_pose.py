@@ -35,7 +35,7 @@ def process(env, job_id, job_input):
     generated_images = pipe(
         prompt=prompt, 
         negative_prompt=negative_prompt, 
-        num_inference_steps=inference_steps, 
+        num_inference_steps=pipe.inference_steps, 
         guidance_scale=guidance_scale if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
         image=pose_image_sized,
         width=job_input['width'],
@@ -55,7 +55,7 @@ def process(env, job_id, job_input):
 
 if __name__ == '__main__':
     test = models.load_test()
-    
+
     model_type = "sdxl" if len(sys.argv) < 2 else sys.argv[-1]
     env = make_env(model_type) 
     process(env, test['id'], test['input'])

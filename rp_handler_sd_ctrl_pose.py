@@ -37,7 +37,7 @@ def process(env, job_id, job_input):
     generated_images = pipe(
         prompt=prompt, 
         negative_prompt=negative_prompt, 
-        num_inference_steps=inference_steps, 
+        num_inference_steps=pipe.inference_steps, 
         guidance_scale=guidance_scale if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
         image=pose_image_sized,
         width=job_input['width'],

@@ -9,13 +9,15 @@ from huggingface_hub import hf_hub_download
 from safetensors.torch import load_file
 import json
 
+import uuid
+
 device = "cuda"
 
 def load_test():
     with open("test_input.json", "r") as f:
         test_input_json = json.load(f)
 
-    test_input_json["id"] = "test_id"
+    test_input_json["id"] = str(uuid.uuid4())
 
     return test_input_json
 
