@@ -202,7 +202,7 @@ def make_sdxl_ti_sketch_pose(inference_steps=40):
 def make_ti_pose(model_type, device=device):
     if model_type == "sdxl":
         return model_sdxl_ti_pose(device=device)
-    if model_type == "sdxl-lightning"
+    if model_type == "sdxl-lightning":
         return model_sdxli_ti_pose(device=device)
 
     return None
@@ -214,5 +214,15 @@ def make_ctrl_pose(model_type, device=device):
         return model_sdxli_ctrl_pose(device=device)
 
     return None
+
+def make(model_type, device=device):
+    if model_type == "sdxl":
+        return model_sdxl(device=device)
+    if model_type == "sdxl-lightning":
+        return model_sdxli(device=device)
+
+    return None
+
+
 
 
