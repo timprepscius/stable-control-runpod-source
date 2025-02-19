@@ -41,6 +41,7 @@ euler_a = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="sched
 pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
     base, 
     unet=unet,
+    vae=vae,
     adapter=pose_adapter, 
     # scheduler=euler_a, 
     torch_dtype=torch.float16, 
@@ -48,7 +49,6 @@ pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
 ).to(device)
 
 pipe.scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
-pipe.vae = vae
 
 sdxl_pipe = pipe.vae
 
