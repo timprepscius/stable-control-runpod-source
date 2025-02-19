@@ -31,7 +31,8 @@ from rp_schema import INPUT_SCHEMA
 
 print(f"SETUP ---- 0C {datetime.now()}");
 
-from rp_handler_sdctrl import process
+#from rp_handler_sdctrl import process
+from rp_handler_sdxllightctrl import process
 
 #######################################
 #######################################
