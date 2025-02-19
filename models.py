@@ -139,6 +139,29 @@ def make_sdxli_ti_pose(inference_steps=8, device=device):
 
     return pipe
 
+def make_sdxl(inference_steps=60, device=device):
+    base = "stabilityai/stable-diffusion-xl-base-1.0"
+
+    pipe = StableDiffusionXLPipeline.from_pretrained(
+        base, 
+        torch_dtype=torch.float16, 
+        variant="fp16"
+    )
+    vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
+    scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
+    pipe.vae = vae
+    pipe.scheduler = scheduler
+
+    pipe.inference_steps = inference_steps
+    pipe.override_guidance_scale = 0
+    pipe.human_name = "sdxl"
+
+    if device is not None:
+        pipe.to(device)
+
+
+    return pipe    
+
 def make_sdxl_ti_pose(inference_steps=60, device=device):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
 
