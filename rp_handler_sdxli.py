@@ -43,8 +43,6 @@ def process(job_id, job_input):
     negative_prompt = job_input['negative_prompt']
     print(f"RUN WITH prompt:{prompt}, negative_prompt:{negative_prompt}, inference_steps:{inference_steps}")
 
-    pose_image_sized = pose_image.resize((job_input['width'], job_input['height']))
-
     generated_images = sdxl_pipe(
         prompt=prompt, 
         negative_prompt=negative_prompt, 
