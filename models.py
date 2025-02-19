@@ -22,7 +22,8 @@ def make_sdxli(inference_steps=8, device=device):
     pipe = StableDiffusionXLPipeline.from_pretrained(base, unet=unet, torch_dtype=torch.float16, variant="fp16").to(device)
     pipe.scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
 
-    pipe.inference_steps = inference_steps  
+    pipe.inference_steps = inference_steps
+    pipe.override_guidance_scale = 0
 
     return pipe
 
@@ -57,6 +58,7 @@ def make_sdxli_ti_pose(inference_steps=8, device=device):
     ).to(device)
 
     pipe.inference_steps = inference_steps  
+    pipe.override_guidance_scale = 0
 
     return pipe
 

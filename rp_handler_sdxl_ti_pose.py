@@ -11,6 +11,9 @@ print(f"SETUP ---- B {datetime.now()}");
 
 sdxl_pipe = models.make_sdxl_ti_pose()
 inference_steps = sdxl_pipe.inference_steps
+override_guidance_scale = None
+if sdxl_pipe.override_guidance_scale is not None:
+    override_guidance_scale = sdxl_pipe.override_guidance_scale
 
 pose_image_path = "pose_1.png"
 pose_image = load_image(pose_image_path)
@@ -23,6 +26,7 @@ def process(job_id, job_input):
     prompt = job_input['prompt']
     negative_prompt = job_input['negative_prompt']
     pose_image_sized = pose_image.resize((job_input['width'], job_input['height']))
+    guidance_scale = job_input['guidance_scale']
 
     print(f"RUN WITH prompt:{prompt}, negative_prompt:{negative_prompt}, inference_steps:{inference_steps}")
 
@@ -30,7 +34,7 @@ def process(job_id, job_input):
         prompt=prompt, 
         negative_prompt=negative_prompt, 
         num_inference_steps=inference_steps, 
-        guidance_scale=7.5,
+        guidance_scale=guidance_scale if override_guidance_scale is None else override_guidance_scale,
         image=pose_image_sized,
         width=job_input['width'],
         height=job_input['height']

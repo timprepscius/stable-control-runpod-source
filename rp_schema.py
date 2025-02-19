@@ -14,16 +14,6 @@ INPUT_SCHEMA = {
         'required': True,
         'default': None
     },
-    'width': {
-        'type': int,
-        'required': False,
-        'default': 1024
-    },
-    'height': {
-        'type': int,
-        'required': False,
-        'default': 1024
-    },
     'guidance_scale': {
         'type': float,
         'required': False,
