@@ -19,6 +19,7 @@ controlnet = ControlNetModel.from_pretrained(
     "thibaud/controlnet-openpose-sdxl-1.0", torch_dtype=torch.float16
 )
 
+inference_steps = 8
 base = "stabilityai/stable-diffusion-xl-base-1.0"
 repo = "ByteDance/SDXL-Lightning"
 ckpt = f"sdxl_lightning_{inference_steps}step_unet.safetensors" # Use the correct ckpt for your step setting!
@@ -49,6 +50,7 @@ def process(job_id, job_input):
     generated_images = pipe(
         prompt=prompt, 
         negative_prompt=negative_prompt, 
+        num_inference_steps=inference_steps, 
         image=pose_image,
         guidance_scale=0
     ).images
