@@ -36,7 +36,8 @@ def make_sdxl_ctrl_pose(inference_steps=60, device=device):
 
     # Set the scheduler
     pipe.scheduler = UniPCMultistepScheduler.from_config(pipe.scheduler.config)
-    pipe.to(device)
+    if device is not None:
+        pipe.to(device)
 
     pipe.inference_steps = inference_steps
 
@@ -49,12 +50,15 @@ def make_sdxli(inference_steps=8, device=device):
 
     # Load model.
     unet = UNet2DConditionModel.from_config(base, subfolder="unet").to(device, torch.float16)
-    unet.load_state_dict(load_file(hf_hub_download(repo, ckpt), device=device))
-    pipe = StableDiffusionXLPipeline.from_pretrained(base, unet=unet, torch_dtype=torch.float16, variant="fp16").to(device)
+    unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
+    pipe = StableDiffusionXLPipeline.from_pretrained(base, unet=unet, torch_dtype=torch.float16, variant="fp16")
     pipe.scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = 0
+
+    if device is not None:
+        pipe.to(device)
 
     return pipe
 
@@ -65,12 +69,12 @@ def make_sdxli_ti_pose(inference_steps=8, device=device):
 
     # Load model.
     unet = UNet2DConditionModel.from_config(base, subfolder="unet").to(device, torch.float16)
-    unet.load_state_dict(load_file(hf_hub_download(repo, ckpt), device=device))
+    unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
 
     pose_adapter = T2IAdapter.from_pretrained(
         "TencentARC/t2i-adapter-openpose-sdxl-1.0", 
         torch_dtype=torch.float16
-    ).to(device)
+    )
 
     print(f"SETUP ---- C2 {datetime.now()}");
 
@@ -86,10 +90,13 @@ def make_sdxli_ti_pose(inference_steps=8, device=device):
         adapter=pose_adapter, 
         torch_dtype=torch.float16, 
         variant="fp16"
-    ).to(device)
+    )
 
     pipe.inference_steps = inference_steps  
     pipe.override_guidance_scale = 0
+
+    if device is not None:
+        pipe.to(device)
 
     return pipe
 
@@ -99,7 +106,7 @@ def make_sdxl_ti_pose(inference_steps=40, device=device):
     pose_adapter = T2IAdapter.from_pretrained(
         "TencentARC/t2i-adapter-openpose-sdxl-1.0", 
         torch_dtype=torch.float16
-    ).to(device)
+    )
 
     print(f"SETUP ---- C2 {datetime.now()}");
 
@@ -113,9 +120,12 @@ def make_sdxl_ti_pose(inference_steps=40, device=device):
         scheduler=scheduler, 
         torch_dtype=torch.float16, 
         variant="fp16"
-    ).to(device)  
+    )  
 
     pipe.inference_steps = inference_steps  
+
+    if device is not None:
+        pipe.to(device)
 
     return pipe
 
@@ -125,14 +135,14 @@ def make_sdxl_ti_sketch_pose(inference_steps=40):
     reference_adapter = T2IAdapter.from_pretrained(
         "TencentARC/t2i-adapter-sketch-sdxl-1.0", 
         torch_dtype=torch.float16
-    ).to(device)
+    )
 
     print(f"SETUP ---- C1 {datetime.now()}");
 
     pose_adapter = T2IAdapter.from_pretrained(
         "TencentARC/t2i-adapter-openpose-sdxl-1.0", 
         torch_dtype=torch.float16
-    ).to(device)
+    )
 
     print(f"SETUP ---- C2 {datetime.now()}");
 
@@ -146,9 +156,12 @@ def make_sdxl_ti_sketch_pose(inference_steps=40):
         scheduler=scheduler, 
         torch_dtype=torch.float16, 
         variant="fp16"
-    ).to(device)    
+    )    
 
     pipe.inference_steps = inference_steps  
+
+    if device is not None:
+        pipe.to(device)
 
     return pipe
 
