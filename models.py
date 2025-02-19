@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import os
 import torch
 
@@ -22,7 +24,7 @@ def make_sdxli(inference_steps=8):
 
     return pipe
 
-def make_generate_sdxliti(inference_steps=8):
+def make_sdxli_ti_pose(inference_steps=8):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
     repo = "ByteDance/SDXL-Lightning"
     ckpt = f"sdxl_lightning_{inference_steps}step_unet.safetensors" # Use the correct ckpt for your step setting!
@@ -54,7 +56,29 @@ def make_generate_sdxliti(inference_steps=8):
 
     return pipe
 
-def make_modify_sdxlti(inference_steps=8):
+def make_sdxl_ti_pose(inference_steps=8):
+    base = "stabilityai/stable-diffusion-xl-base-1.0"
+
+    pose_adapter = T2IAdapter.from_pretrained(
+        "TencentARC/t2i-adapter-openpose-sdxl-1.0", 
+        torch_dtype=torch.float16
+    ).to(device)
+
+    print(f"SETUP ---- C2 {datetime.now()}");
+
+    vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
+    scheduler = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="scheduler")
+
+    pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
+        base, 
+        vae=vae, 
+        adapter=pose_adapter, 
+        scheduler=scheduler, 
+        torch_dtype=torch.float16, 
+        variant="fp16"
+    ).to(device)    
+
+def make_sdxl_ti_sketch_pose(inference_steps=8):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
 
     reference_adapter = T2IAdapter.from_pretrained(
