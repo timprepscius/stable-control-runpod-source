@@ -7,7 +7,7 @@ import os
 print(f"SETUP ---- B {datetime.now()}");
 
 import torch
-from diffusers import ControlNetModel, StableDiffusionXLControlNetPipeline, AutoencoderKL, UniPCMultistepScheduler
+from diffusers import ControlNetModel, StableDiffusionXLControlNetPipeline, AutoencoderKL, EulerDiscreteScheduler, UniPCMultistepScheduler, UNet2DConditionModel
 from diffusers.utils import load_image
 from PIL import Image
 import numpy as np

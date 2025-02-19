@@ -28,7 +28,12 @@ sdxl_pipe.scheduler = EulerDiscreteScheduler.from_config(sdxl_pipe.scheduler.con
 
 print(f"SETUP ---- C {datetime.now()}");
 
-controlnet = ControlNetModel.from_pretrained(
+reference_controlnet = ControlNetModel.from_pretrained(
+    "thibaud/controlnet-reference-sdxl-1.0",  # Replace with the actual reference model
+    torch_dtype=torch.float16
+).to(device)
+
+pose_controlnet = ControlNetModel.from_pretrained(
     "thibaud/controlnet-openpose-sdxl-1.0",
     torch_dtype=torch.float16
 ).to(device)
@@ -37,7 +42,7 @@ print(f"SETUP ---- CD {datetime.now()}");
 
 controlnet_pipe = StableDiffusionXLControlNetImg2ImgPipeline.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0",
-    controlnet=controlnet,
+    controlnet=[reference_controlnet, pose_controlnet],
     torch_dtype=torch.float16
 ).to(device)
 
@@ -86,8 +91,8 @@ def process(job_id, job_input):
             prompt=prompt,
             negative_prompt="",
             image=generated_image,    # The original generated image
-            control_image=pose_image, # The extracted pose
-            guidance_scale=4.0,
+            control_image=[generated_image, pose_image], # The extracted pose
+            guidance_scale=[1.5, 4.0],
             width=job_input['width'],
             height=job_input['height']
         ).images
