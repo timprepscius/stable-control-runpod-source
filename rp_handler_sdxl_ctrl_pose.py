@@ -34,7 +34,6 @@ def process(job_id, job_input):
         prompt=prompt, 
         negative_prompt=negative_prompt, 
         num_inference_steps=inference_steps, 
-        image=pose_image,
         guidance_scale=guidance_scale if override_guidance_scale is None else override_guidance_scale,
         image=pose_image_sized,
         width=job_input['width'],
