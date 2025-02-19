@@ -88,8 +88,11 @@ def make_sdxli(inference_steps=8, device=device):
     unet = UNet2DConditionModel.from_config(base, subfolder="unet").to(device, torch.float16)
     unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
     pipe = StableDiffusionXLPipeline.from_pretrained(base, unet=unet, torch_dtype=torch.float16, variant="fp16")
-    pipe.scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
 
+    vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
+    scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
+    pipe.scheduler = scheduler
+    pipe.vae = vae
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = 0
     pipe.human_name = "sdxl_lightning"
