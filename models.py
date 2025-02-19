@@ -210,7 +210,7 @@ def make_ti_pose(model_type, device=device):
 def make_ctrl_pose(model_type, device=device):
     if model_type == "sdxl":
         return model_sdxl_ctrl_pose(device=device)
-    if model_type == "sdxl-lightning"
+    if model_type == "sdxl-lightning":
         return model_sdxli_ctrl_pose(device=device)
 
     return None
