@@ -92,8 +92,6 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device, model=empty_model):
     # Load model.
     unet = UNet2DConditionModel.from_config(base, subfolder="unet")
     unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
-    # if device is not None:
-    #     unet.to(device, torch.float16)
 
     controlnet = ControlNetModel.from_pretrained(
         "thibaud/controlnet-openpose-sdxl-1.0", torch_dtype=torch.float16
@@ -124,8 +122,6 @@ def make_sdxli(inference_steps=8, device=device, model=empty_model):
     # Load model.
     unet = UNet2DConditionModel.from_config(base, subfolder="unet")
     unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
-    if device is not None:
-        unet.to(device, torch.float16)
 
     pipe = StableDiffusionXLPipeline.from_pretrained(base, unet=unet, torch_dtype=torch.float16, variant="fp16")
 
@@ -150,8 +146,6 @@ def make_sdxli_ti_pose(inference_steps=8, device=device, model=empty_model):
     # Load model.
     unet = UNet2DConditionModel.from_config(base, subfolder="unet")
     unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
-    if device is not None:
-        unet.to(device, torch.float16)
 
     pose_adapter = T2IAdapter.from_pretrained(
         "TencentARC/t2i-adapter-openpose-sdxl-1.0", 
