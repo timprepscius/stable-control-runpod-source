@@ -33,7 +33,7 @@ print(f"SETUP ---- 0C {datetime.now()}");
 
 import rp_handler_sd_ctrl_pose as model
 
-env = model.make_env("sdxl-lightning")
+env = model.make_env("sdxl")
 
 #######################################
 #######################################
