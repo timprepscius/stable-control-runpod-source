@@ -44,10 +44,20 @@ def make_scheduler(m, pipe, default=None):
 
     return None
 
+def set_scheduler(m, pipe, default=None):
+    scheduler = make_scheduler(m, pipe, default)
+    if scheduler is not None:
+        pipe.scheduler = scheduler
+
 def make_vae(type, pipe, default=None):
     vae = value_or_default(m["vae"], default)
     if vae == "madebyollin":
         return AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
+
+def set_vae(m, pipe, default=None):
+    vae = make_vae(m, pipe, default)
+    if vae is not None:
+        pipe.vae = vae
 
 
 def make_sdxl_ctrl_pose(inference_steps=60, device=device, model=empty_model):
@@ -62,13 +72,8 @@ def make_sdxl_ctrl_pose(inference_steps=60, device=device, model=empty_model):
         base, controlnet=controlnet, torch_dtype=torch.float16
     )
 
-    vae = make_vae(model, pipe)
-    if vae is not None
-        pipe.vae = vae
-
-    scheduler = make_scheduler(model, pipe, "UniPCMultistepScheduler")
-    if scheduler is not None
-        pipe.scheduler = scheduler
+    set_vae(mode, pipe)
+    set_scheduler(model, pipe, "UniPCMultistepScheduler")
 
     if device is not None:
         pipe.to(device)
@@ -97,13 +102,8 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device):
         base, unet=unet, controlnet=controlnet, torch_dtype=torch.float16
     )
 
-    vae = make_vae(model, pipe)
-    if vae is not None
-        pipe.vae = vae
-
-    scheduler = make_scheduler(model, pipe, "UniPCMultistepScheduler")
-    if scheduler is not None
-        pipe.scheduler = scheduler
+    set_vae(mode, pipe)
+    set_scheduler(model, pipe, "UniPCMultistepScheduler")
 
     if device is not None:
         pipe.to(device)
@@ -124,13 +124,8 @@ def make_sdxli(inference_steps=8, device=device):
     unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
     pipe = StableDiffusionXLPipeline.from_pretrained(base, unet=unet, torch_dtype=torch.float16, variant="fp16")
 
-    vae = make_vae(model, pipe, "madebyollin")
-    if vae is not None
-        pipe.vae = vae
-
-    scheduler = make_scheduler(model, pipe, "EulerDiscreteScheduler")
-    if scheduler is not None
-        pipe.scheduler = scheduler
+    set_vae(mode, pipe, "madebyollin")
+    set_scheduler(model, pipe, "EulerDiscreteScheduler")
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = 0
@@ -166,13 +161,8 @@ def make_sdxli_ti_pose(inference_steps=8, device=device):
         variant="fp16"
     )
 
-    vae = make_vae(model, pipe, "madebyollin")
-    if vae is not None
-        pipe.vae = vae
-
-    scheduler = make_scheduler(model, pipe, "EulerAncestralDiscreteScheduler")
-    if scheduler is not None
-        pipe.scheduler = scheduler
+    set_vae(mode, pipe, "madebyollin")
+    set_scheduler(model, pipe, "EulerAncestralDiscreteScheduler")
 
     pipe.inference_steps = inference_steps  
     pipe.override_guidance_scale = 0
@@ -192,13 +182,8 @@ def make_sdxl(inference_steps=60, device=device):
         variant="fp16"
     )
 
-    vae = make_vae(model, pipe, "madebyollin")
-    if vae is not None
-        pipe.vae = vae
-
-    scheduler = make_scheduler(model, pipe, "EulerDiscreteScheduler")
-    if scheduler is not None
-        pipe.scheduler = scheduler
+    set_vae(mode, pipe, "madebyollin")
+    set_scheduler(model, pipe, "EulerDiscreteScheduler")
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
@@ -227,13 +212,8 @@ def make_sdxl_ti_pose(inference_steps=60, device=device):
         variant="fp16"
     )  
 
-    vae = make_vae(model, pipe, "madebyollin")
-    if vae is not None
-        pipe.vae = vae
-
-    scheduler = make_scheduler(model, pipe, "EulerAncestralDiscreteScheduler")
-    if scheduler is not None
-        pipe.scheduler = scheduler
+    set_vae(mode, pipe, "madebyollin")
+    set_scheduler(model, pipe, "EulerAncestralDiscreteScheduler")
 
     pipe.inference_steps = inference_steps  
     pipe.override_guidance_scale = None
@@ -270,14 +250,9 @@ def make_sdxl_ti_sketch_pose(inference_steps=40):
         variant="fp16"
     )    
 
-    vae = make_vae(model, pipe, "madebyollin")
-    if vae is not None
-        pipe.vae = vae
+    set_vae(mode, pipe, "madebyollin")
+    set_scheduler(model, pipe, "EulerAncestralDiscreteScheduler")
 
-    scheduler = make_scheduler(model, pipe, "EulerAncestralDiscreteScheduler")
-    if scheduler is not None
-        pipe.scheduler = scheduler
-        
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
     pipe.human_name = "sdxl_ti_sketch_pose"
