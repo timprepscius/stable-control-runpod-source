@@ -41,7 +41,8 @@ def process(env, job_id, job_input):
         guidance_scale=guidance_scale if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
         image=pose_image_sized,
         width=job_input['width'],
-        height=job_input['height']
+        height=job_input['height'],
+        control_guidance_end=0.2
     ).images
 
     output_paths = []
