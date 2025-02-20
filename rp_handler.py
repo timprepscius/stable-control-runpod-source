@@ -31,9 +31,9 @@ from rp_schema import INPUT_SCHEMA
 
 print(f"SETUP ---- 0C {datetime.now()}");
 
-import rp_handler_sd_ctrl_pose as handler
+import rp_handler_sd_ctrl_pose as model
 
-env = handler.make_env("sdxl-lightning")
+env = model.make_env("sdxl-lightning")
 
 #######################################
 #######################################
@@ -69,7 +69,7 @@ def run(job):
     validated_input = validated_input['validated_input']
 
     print(f"RUN ---- PROCESS BEGIN {datetime.now()}");
-    result = process(env, job_id, validated_input)
+    result = model.process(env, job_id, validated_input)
     print(f"RUN ---- PROCESS END {datetime.now()}");
 
     job_output = []
