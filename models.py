@@ -109,7 +109,7 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device, model=empty_model):
         pipe.to(device, torch.float16)
 
     pipe.inference_steps = inference_steps
-    pipe.override_guidance_scale = 0
+    pipe.override_guidance_scale = None
     pipe.human_name = f"sdxl_lightning_ctrl_pose_vae_{model['vae']}_scheduler_{model['scheduler']}"
 
     return pipe   
