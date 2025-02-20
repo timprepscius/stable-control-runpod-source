@@ -1,5 +1,6 @@
-from rp_warmup_sd_ctrl import warmup
 import traceback
+
+from rp_warmup_sd_ctrl import warmup
 
 try:
     warmup("sdxl-lightning")
