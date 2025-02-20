@@ -49,7 +49,7 @@ def set_scheduler(m, pipe, default=None):
     if scheduler is not None:
         pipe.scheduler = scheduler
 
-def make_vae(type, pipe, default=None):
+def make_vae(m, pipe, default=None):
     vae = value_or_default(m["vae"], default)
     if vae == "madebyollin":
         return AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
