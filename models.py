@@ -72,7 +72,7 @@ def make_sdxl_ctrl_pose(inference_steps=60, device=device, model=empty_model):
         base, controlnet=controlnet, torch_dtype=torch.float16
     )
 
-    set_vae(mode, pipe)
+    set_vae(model, pipe, "madebyollin")
     set_scheduler(model, pipe, "UniPCMultistepScheduler")
 
     if device is not None:
@@ -84,7 +84,7 @@ def make_sdxl_ctrl_pose(inference_steps=60, device=device, model=empty_model):
 
     return pipe
 
-def make_sdxli_ctrl_pose(inference_steps=8, device=device):
+def make_sdxli_ctrl_pose(inference_steps=8, device=device, model=empty_model):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
     repo = "ByteDance/SDXL-Lightning"
     ckpt = f"sdxl_lightning_{inference_steps}step_unet.safetensors" # Use the correct ckpt for your step setting!
@@ -102,7 +102,7 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device):
         base, unet=unet, controlnet=controlnet, torch_dtype=torch.float16
     )
 
-    set_vae(mode, pipe)
+    set_vae(model, pipe, "madebyollin")
     set_scheduler(model, pipe, "UniPCMultistepScheduler")
 
     if device is not None:
@@ -114,7 +114,7 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device):
 
     return pipe    
 
-def make_sdxli(inference_steps=8, device=device):
+def make_sdxli(inference_steps=8, device=device, model=empty_model):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
     repo = "ByteDance/SDXL-Lightning"
     ckpt = f"sdxl_lightning_{inference_steps}step_unet.safetensors" # Use the correct ckpt for your step setting!
@@ -124,7 +124,7 @@ def make_sdxli(inference_steps=8, device=device):
     unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
     pipe = StableDiffusionXLPipeline.from_pretrained(base, unet=unet, torch_dtype=torch.float16, variant="fp16")
 
-    set_vae(mode, pipe, "madebyollin")
+    set_vae(model, pipe, "madebyollin")
     set_scheduler(model, pipe, "EulerDiscreteScheduler")
 
     pipe.inference_steps = inference_steps
@@ -137,7 +137,7 @@ def make_sdxli(inference_steps=8, device=device):
 
     return pipe
 
-def make_sdxli_ti_pose(inference_steps=8, device=device):
+def make_sdxli_ti_pose(inference_steps=8, device=device, model=empty_model):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
     repo = "ByteDance/SDXL-Lightning"
     ckpt = f"sdxl_lightning_{inference_steps}step_unet.safetensors" # Use the correct ckpt for your step setting!
@@ -161,7 +161,7 @@ def make_sdxli_ti_pose(inference_steps=8, device=device):
         variant="fp16"
     )
 
-    set_vae(mode, pipe, "madebyollin")
+    set_vae(model, pipe, "madebyollin")
     set_scheduler(model, pipe, "EulerAncestralDiscreteScheduler")
 
     pipe.inference_steps = inference_steps  
@@ -173,7 +173,7 @@ def make_sdxli_ti_pose(inference_steps=8, device=device):
 
     return pipe
 
-def make_sdxl(inference_steps=60, device=device):
+def make_sdxl(inference_steps=60, device=device, model=empty_model):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
 
     pipe = StableDiffusionXLPipeline.from_pretrained(
@@ -182,7 +182,7 @@ def make_sdxl(inference_steps=60, device=device):
         variant="fp16"
     )
 
-    set_vae(mode, pipe, "madebyollin")
+    set_vae(model, pipe, "madebyollin")
     set_scheduler(model, pipe, "EulerDiscreteScheduler")
 
     pipe.inference_steps = inference_steps
@@ -195,7 +195,7 @@ def make_sdxl(inference_steps=60, device=device):
 
     return pipe    
 
-def make_sdxl_ti_pose(inference_steps=60, device=device):
+def make_sdxl_ti_pose(inference_steps=60, device=device, model=empty_model):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
 
     pose_adapter = T2IAdapter.from_pretrained(
@@ -212,7 +212,7 @@ def make_sdxl_ti_pose(inference_steps=60, device=device):
         variant="fp16"
     )  
 
-    set_vae(mode, pipe, "madebyollin")
+    set_vae(model, pipe, "madebyollin")
     set_scheduler(model, pipe, "EulerAncestralDiscreteScheduler")
 
     pipe.inference_steps = inference_steps  
@@ -224,7 +224,7 @@ def make_sdxl_ti_pose(inference_steps=60, device=device):
 
     return pipe
 
-def make_sdxl_ti_sketch_pose(inference_steps=40):
+def make_sdxl_ti_sketch_pose(inference_steps=40, model=empty_model):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
 
     reference_adapter = T2IAdapter.from_pretrained(
@@ -250,7 +250,7 @@ def make_sdxl_ti_sketch_pose(inference_steps=40):
         variant="fp16"
     )    
 
-    set_vae(mode, pipe, "madebyollin")
+    set_vae(model, pipe, "madebyollin")
     set_scheduler(model, pipe, "EulerAncestralDiscreteScheduler")
 
     pipe.inference_steps = inference_steps
