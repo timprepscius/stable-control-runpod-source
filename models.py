@@ -156,7 +156,7 @@ def make_sdxl(inference_steps=60, device=device):
     pipe.scheduler = scheduler
 
     pipe.inference_steps = inference_steps
-    pipe.override_guidance_scale = 0
+    pipe.override_guidance_scale = None
     pipe.human_name = "sdxl"
 
     if device is not None:
