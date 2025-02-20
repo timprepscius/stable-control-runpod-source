@@ -5,7 +5,7 @@
        "negative_prompt": "low-quality, deformed, text, poorly drawn, multiple",
        "width": 768,
        "height": 1024,
-       "guidance_scale": 1,
+       "guidance_scale": 7.5,
        "restart": ""
      }
 }
