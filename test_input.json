@@ -1,7 +1,7 @@
 {
      "input": {
        "seed": 1,
-       "prompt": "cat in a space suit, (t-pose), (full body)",
+       "prompt": "(full body), cat in a space suit, (t-pose)",
        "negative_prompt": "low-quality, deformed, text, poorly drawn, multiple, partial",
        "width": 1024,
        "height": 1024,
