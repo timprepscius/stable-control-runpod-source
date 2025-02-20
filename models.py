@@ -80,7 +80,7 @@ def make_sdxl_ctrl_pose(inference_steps=60, device=device, model=empty_model):
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
-    pipe.human_name = "sdxl_ctrl_pose"
+    pipe.human_name = f"sdxl_ctrl_pose_vae_{model["vae"]}_scheduler_{model["scheduler"]}"
 
     return pipe
 
@@ -110,7 +110,7 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device, model=empty_model):
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
-    pipe.human_name = "sdxl_lightning_ctrl_pose"
+    pipe.human_name = f"sdxl_lightning_ctrl_pose_vae_{model["vae"]}_scheduler_{model["scheduler"]}"
 
     return pipe    
 
@@ -129,7 +129,7 @@ def make_sdxli(inference_steps=8, device=device, model=empty_model):
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = 0
-    pipe.human_name = "sdxl_lightning"
+    pipe.human_name = f"sdxl_lightning_vae_{model["vae"]}_scheduler_{model["scheduler"]}"
 
     if device is not None:
         pipe.to(device)
@@ -166,7 +166,7 @@ def make_sdxli_ti_pose(inference_steps=8, device=device, model=empty_model):
 
     pipe.inference_steps = inference_steps  
     pipe.override_guidance_scale = 0
-    pipe.human_name = "sdxl_lightning_ti_pose"
+    pipe.human_name = f"sdxl_lightning_ti_pose_vae_{model["vae"]}_scheduler_{model["scheduler"]}"
 
     if device is not None:
         pipe.to(device)
@@ -187,7 +187,7 @@ def make_sdxl(inference_steps=60, device=device, model=empty_model):
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
-    pipe.human_name = "sdxl"
+    pipe.human_name = f"sdxl_vae_{model["vae"]}_scheduler_{model["scheduler"]}"
 
     if device is not None:
         pipe.to(device)
@@ -217,7 +217,7 @@ def make_sdxl_ti_pose(inference_steps=60, device=device, model=empty_model):
 
     pipe.inference_steps = inference_steps  
     pipe.override_guidance_scale = None
-    pipe.human_name = "sdxl_ti_pose"
+    pipe.human_name = f"sdxl_ti_pose_vae_{model["vae"]}_scheduler_{model["scheduler"]}"
 
     if device is not None:
         pipe.to(device)
@@ -255,7 +255,7 @@ def make_sdxl_ti_sketch_pose(inference_steps=40, model=empty_model):
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
-    pipe.human_name = "sdxl_ti_sketch_pose"
+    pipe.human_name = f"sdxl_ti_sketch_pose_vae_{model["vae"]}_scheduler_{model["scheduler"]}"
 
     if device is not None:
         pipe.to(device)
