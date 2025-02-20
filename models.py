@@ -271,6 +271,7 @@ def parse_model_string(model_string):
             key, value = comp.split("=", 1)
             result[key] = value
     
+    print(result)
     return result
 
 def make_ti_pose(model_string, device=device):
