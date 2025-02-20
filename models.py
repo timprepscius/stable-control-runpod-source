@@ -92,8 +92,8 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device, model=empty_model):
     # Load model.
     unet = UNet2DConditionModel.from_config(base, subfolder="unet")
     unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
-    if device is not None:
-        unet.to(device, torch.float16)
+    # if device is not None:
+    #     unet.to(device, torch.float16)
 
     controlnet = ControlNetModel.from_pretrained(
         "thibaud/controlnet-openpose-sdxl-1.0", torch_dtype=torch.float16
