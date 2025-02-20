@@ -76,7 +76,7 @@ def make_sdxl_ctrl_pose(inference_steps=60, device=device, model=empty_model):
     set_scheduler(model, pipe, "UniPCMultistepScheduler")
 
     if device is not None:
-        pipe.to(device)
+        pipe.to(device, torch.float16)
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
@@ -93,7 +93,7 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device, model=empty_model):
     unet = UNet2DConditionModel.from_config(base, subfolder="unet")
     unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
     if device is not None:
-        unet.to(device)
+        unet.to(device, torch.float16)
 
     controlnet = ControlNetModel.from_pretrained(
         "thibaud/controlnet-openpose-sdxl-1.0", torch_dtype=torch.float16
@@ -108,7 +108,7 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device, model=empty_model):
     set_scheduler(model, pipe, "UniPCMultistepScheduler")
 
     if device is not None:
-        pipe.to(device)
+        pipe.to(device, torch.float16)
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
@@ -125,8 +125,8 @@ def make_sdxli(inference_steps=8, device=device, model=empty_model):
     unet = UNet2DConditionModel.from_config(base, subfolder="unet")
     unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
     if device is not None:
-        unet.to(device)
-    
+        unet.to(device, torch.float16)
+
     pipe = StableDiffusionXLPipeline.from_pretrained(base, unet=unet, torch_dtype=torch.float16, variant="fp16")
 
     set_vae(model, pipe, "madebyollin")
@@ -137,7 +137,7 @@ def make_sdxli(inference_steps=8, device=device, model=empty_model):
     pipe.human_name = f"sdxl_lightning_vae_{model['vae']}_scheduler_{model['scheduler']}"
 
     if device is not None:
-        pipe.to(device)
+        pipe.to(device, torch.float16)
 
 
     return pipe
@@ -151,7 +151,7 @@ def make_sdxli_ti_pose(inference_steps=8, device=device, model=empty_model):
     unet = UNet2DConditionModel.from_config(base, subfolder="unet")
     unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
     if device is not None:
-        unet.to(device)
+        unet.to(device, torch.float16)
 
     pose_adapter = T2IAdapter.from_pretrained(
         "TencentARC/t2i-adapter-openpose-sdxl-1.0", 
@@ -176,7 +176,7 @@ def make_sdxli_ti_pose(inference_steps=8, device=device, model=empty_model):
     pipe.human_name = f"sdxl_lightning_ti_pose_vae_{model['vae']}_scheduler_{model['scheduler']}"
 
     if device is not None:
-        pipe.to(device)
+        pipe.to(device, torch.float16)
 
     return pipe
 
@@ -197,7 +197,7 @@ def make_sdxl(inference_steps=60, device=device, model=empty_model):
     pipe.human_name = f"sdxl_vae_{model['vae']}_scheduler_{model['scheduler']}"
 
     if device is not None:
-        pipe.to(device)
+        pipe.to(device, torch.float16)
 
 
     return pipe    
@@ -227,7 +227,7 @@ def make_sdxl_ti_pose(inference_steps=60, device=device, model=empty_model):
     pipe.human_name = f"sdxl_ti_pose_vae_{model['vae']}_scheduler_{model['scheduler']}"
 
     if device is not None:
-        pipe.to(device)
+        pipe.to(device, torch.float16)
 
     return pipe
 
@@ -265,7 +265,7 @@ def make_sdxl_ti_sketch_pose(inference_steps=40, model=empty_model):
     pipe.human_name = f"sdxl_ti_sketch_pose_vae_{model['vae']}_scheduler_{model['scheduler']}"
 
     if device is not None:
-        pipe.to(device)
+        pipe.to(device, torch.float16)
 
     return pipe
 
