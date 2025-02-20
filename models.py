@@ -99,7 +99,8 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device, model=empty_model):
 
     # Load SDXL pipeline
     pipe = StableDiffusionXLControlNetPipeline.from_pretrained(
-        base, unet=unet, controlnet=controlnet, torch_dtype=torch.float16
+        base, unet=unet, controlnet=controlnet, torch_dtype=torch.float16,
+        control_guidance_end=0.2
     )
 
     set_vae(model, pipe, "madebyollin")
