@@ -114,32 +114,6 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device, model=empty_model):
 
     return pipe   
 
-def make_sdxli_ctrl_pose_NO_WORK(inference_steps=8, device=device, model=empty_model):
-    base = f"ByteDance/SDXL-Lightning"
-    ckpt = f"sdxl_lightning_{inference_steps}step.safetensors"
-
-    controlnet = ControlNetModel.from_pretrained(
-        "thibaud/controlnet-openpose-sdxl-1.0", torch_dtype=torch.float16
-    )
-
-    # Load SDXL pipeline
-    pipe = StableDiffusionXLControlNetPipeline.from_pretrained(
-        base, controlnet=controlnet, torch_dtype=torch.float16
-    )
-    pipe.unet.load_state_dict(load_file(hf_hub_download(base, ckpt)))
-
-    set_vae(model, pipe, "madebyollin")
-    set_scheduler(model, pipe, "UniPCMultistepScheduler")
-
-    if device is not None:
-        pipe.to(device)
-
-    pipe.inference_steps = inference_steps
-    pipe.override_guidance_scale = None
-    pipe.human_name = f"sdxl_lightning_ctrl_pose_vae_{model['vae']}_scheduler_{model['scheduler']}"
-
-    return pipe    
-
 def make_sdxli(inference_steps=8, device=device, model=empty_model):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
     repo = "ByteDance/SDXL-Lightning"
