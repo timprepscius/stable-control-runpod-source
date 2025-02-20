@@ -115,7 +115,7 @@ def make_sdxli_ctrl_pose_UNET(inference_steps=8, device=device, model=empty_mode
     return pipe   
 
 def make_sdxli_ctrl_pose(inference_steps=8, device=device, model=empty_model):
-    base = f"ByteDance/sdxl_lightning_{inference_steps}step"
+    base = f"ByteDance/SDXL-Lightning/sdxl_lightning_{inference_steps}step"
 
     controlnet = ControlNetModel.from_pretrained(
         "thibaud/controlnet-openpose-sdxl-1.0", torch_dtype=torch.float16
