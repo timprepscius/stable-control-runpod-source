@@ -33,7 +33,7 @@ def value_or_default(v, d):
 def make_scheduler(m, pipe, default=None):
     scheduler = value_or_default(m["scheduler"], default)
     if scheduler == "UniPCMultistepScheduler":
-        return UniPCMultistepScheduler(pipe.scheduler.config)
+        return UniPCMultistepScheduler.from_config(pipe.scheduler.config)
 
     if scheduler == "EulerDiscreteScheduler":
         return EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
