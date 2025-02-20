@@ -115,7 +115,8 @@ def make_sdxli_ctrl_pose_UNET(inference_steps=8, device=device, model=empty_mode
     return pipe   
 
 def make_sdxli_ctrl_pose(inference_steps=8, device=device, model=empty_model):
-    base = f"ByteDance/SDXL-Lightning/sdxl_lightning_{inference_steps}step"
+    base = f"ByteDance/SDXL-Lightning"
+    ckpt = f"sdxl_lightning_{inference_steps}step.safetensors"
 
     controlnet = ControlNetModel.from_pretrained(
         "thibaud/controlnet-openpose-sdxl-1.0", torch_dtype=torch.float16
@@ -125,6 +126,7 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device, model=empty_model):
     pipe = StableDiffusionXLControlNetPipeline.from_pretrained(
         base, controlnet=controlnet, torch_dtype=torch.float16
     )
+    pipe.unet.load_state_dict(load_file(hf_hub_download(base, ckpt)))
 
     set_vae(model, pipe, "madebyollin")
     set_scheduler(model, pipe, "UniPCMultistepScheduler")
