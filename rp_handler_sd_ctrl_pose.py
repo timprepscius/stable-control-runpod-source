@@ -13,7 +13,7 @@ print(f"SETUP ---- C {datetime.now()}");
 def make_env(model_type="sdxl"):
     print(f"SETUP ---- B {datetime.now()}");
 
-    pipe = models.make_sdxl_ctrl_pose()
+    pipe = models.make_ctrl_pose(model_type)
 
     pose_image_path = "pose_1.png"
     pose_image = load_image(pose_image_path)
