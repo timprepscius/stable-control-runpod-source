@@ -90,7 +90,7 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device, model=empty_model):
     ckpt = f"sdxl_lightning_{inference_steps}step_unet.safetensors" # Use the correct ckpt for your step setting!
 
     # Load model.
-    unet = UNet2DConditionModel.from_config(base, subfolder="unet").to(device, torch.float16)
+    unet = UNet2DConditionModel.from_config(base, subfolder="unet")
     unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
 
     controlnet = ControlNetModel.from_pretrained(
@@ -120,7 +120,7 @@ def make_sdxli(inference_steps=8, device=device, model=empty_model):
     ckpt = f"sdxl_lightning_{inference_steps}step_unet.safetensors" # Use the correct ckpt for your step setting!
 
     # Load model.
-    unet = UNet2DConditionModel.from_config(base, subfolder="unet").to(device, torch.float16)
+    unet = UNet2DConditionModel.from_config(base, subfolder="unet")
     unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
     pipe = StableDiffusionXLPipeline.from_pretrained(base, unet=unet, torch_dtype=torch.float16, variant="fp16")
 
@@ -143,7 +143,7 @@ def make_sdxli_ti_pose(inference_steps=8, device=device, model=empty_model):
     ckpt = f"sdxl_lightning_{inference_steps}step_unet.safetensors" # Use the correct ckpt for your step setting!
 
     # Load model.
-    unet = UNet2DConditionModel.from_config(base, subfolder="unet").to(device, torch.float16)
+    unet = UNet2DConditionModel.from_config(base, subfolder="unet")
     unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
 
     pose_adapter = T2IAdapter.from_pretrained(
