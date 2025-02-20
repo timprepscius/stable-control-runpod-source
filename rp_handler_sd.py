@@ -11,19 +11,15 @@ def make_env(model_type="sdxl"):
 
     pipe = models.make(model_type)
 
-    pose_image_path = "pose_1.png"
-    pose_image = load_image(pose_image_path)
-
     print(f"SETUP ---- F {datetime.now()}");
 
-    return { "pipe": pipe, "pose_image": pose_image }
+    return { "pipe": pipe }
 
 
 def process(env, job_id, job_input):
     print(f"RUN ---- A {datetime.now()}");
 
     pipe = env["pipe"]
-    pose_image = env["pose_image"]
 
     prompt = job_input['prompt']
     negative_prompt = job_input['negative_prompt']
