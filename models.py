@@ -21,7 +21,36 @@ def load_test():
 
     return test_input_json
 
-def make_sdxl_ctrl_pose(inference_steps=60, device=device):
+empty_model = { "model": None, "vae": None, "scheduler": None }
+
+
+def value_or_default(v, d):
+    if v is not None:
+        return v
+
+    return d
+
+def make_scheduler(m, pipe, default=None):
+    scheduler = value_or_default(m["scheduler"], default)
+    if scheduler == "UniPCMultistepScheduler":
+        return UniPCMultistepScheduler(pipe.scheduler.config)
+
+    if scheduler == "EulerDiscreteScheduler":
+        return EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
+
+    if scheduler == "EulerAncestralDiscreteScheduler":
+        base = "stabilityai/stable-diffusion-xl-base-1.0"
+        return EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="scheduler", timestep_spacing="trailing")
+
+    return None
+
+def make_vae(type, pipe, default=None):
+    vae = value_or_default(m["vae"], default)
+    if vae == "madebyollin":
+        return AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
+
+
+def make_sdxl_ctrl_pose(inference_steps=60, device=device, model=empty_model):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
 
     controlnet = ControlNetModel.from_pretrained(
@@ -33,11 +62,14 @@ def make_sdxl_ctrl_pose(inference_steps=60, device=device):
         base, controlnet=controlnet, torch_dtype=torch.float16
     )
 
-    # Use a VAE for improved quality (optional but recommended for SDXL)
-    pipe.vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
+    vae = make_vae(model, pipe)
+    if vae is not None
+        pipe.vae = vae
 
-    # Set the scheduler
-    pipe.scheduler = UniPCMultistepScheduler.from_config(pipe.scheduler.config)
+    scheduler = make_scheduler(model, pipe, "UniPCMultistepScheduler")
+    if scheduler is not None
+        pipe.scheduler = scheduler
+
     if device is not None:
         pipe.to(device)
 
@@ -65,11 +97,14 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device):
         base, unet=unet, controlnet=controlnet, torch_dtype=torch.float16
     )
 
-    # Use a VAE for improved quality (optional but recommended for SDXL)
-    pipe.vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
+    vae = make_vae(model, pipe)
+    if vae is not None
+        pipe.vae = vae
 
-    # Set the scheduler
-    pipe.scheduler = UniPCMultistepScheduler.from_config(pipe.scheduler.config)
+    scheduler = make_scheduler(model, pipe, "UniPCMultistepScheduler")
+    if scheduler is not None
+        pipe.scheduler = scheduler
+
     if device is not None:
         pipe.to(device)
 
@@ -89,10 +124,14 @@ def make_sdxli(inference_steps=8, device=device):
     unet.load_state_dict(load_file(hf_hub_download(repo, ckpt)))
     pipe = StableDiffusionXLPipeline.from_pretrained(base, unet=unet, torch_dtype=torch.float16, variant="fp16")
 
-    vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
-    scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
-    pipe.scheduler = scheduler
-    pipe.vae = vae
+    vae = make_vae(model, pipe, "madebyollin")
+    if vae is not None
+        pipe.vae = vae
+
+    scheduler = make_scheduler(model, pipe, "EulerDiscreteScheduler")
+    if scheduler is not None
+        pipe.scheduler = scheduler
+
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = 0
     pipe.human_name = "sdxl_lightning"
@@ -119,19 +158,21 @@ def make_sdxli_ti_pose(inference_steps=8, device=device):
 
     print(f"SETUP ---- C2 {datetime.now()}");
 
-    vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
-    scheduler = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="scheduler", timestep_spacing="trailing")
-    # scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
-
     pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
         base, 
         unet=unet,
-        vae=vae,
-        scheduler=scheduler,
         adapter=pose_adapter, 
         torch_dtype=torch.float16, 
         variant="fp16"
     )
+
+    vae = make_vae(model, pipe, "madebyollin")
+    if vae is not None
+        pipe.vae = vae
+
+    scheduler = make_scheduler(model, pipe, "EulerAncestralDiscreteScheduler")
+    if scheduler is not None
+        pipe.scheduler = scheduler
 
     pipe.inference_steps = inference_steps  
     pipe.override_guidance_scale = 0
@@ -150,10 +191,14 @@ def make_sdxl(inference_steps=60, device=device):
         torch_dtype=torch.float16, 
         variant="fp16"
     )
-    vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
-    scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
-    pipe.vae = vae
-    pipe.scheduler = scheduler
+
+    vae = make_vae(model, pipe, "madebyollin")
+    if vae is not None
+        pipe.vae = vae
+
+    scheduler = make_scheduler(model, pipe, "EulerDiscreteScheduler")
+    if scheduler is not None
+        pipe.scheduler = scheduler
 
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
@@ -175,17 +220,20 @@ def make_sdxl_ti_pose(inference_steps=60, device=device):
 
     print(f"SETUP ---- C2 {datetime.now()}");
 
-    vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
-    scheduler = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="scheduler")
-
     pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
         base, 
-        vae=vae, 
         adapter=pose_adapter, 
-        scheduler=scheduler, 
         torch_dtype=torch.float16, 
         variant="fp16"
     )  
+
+    vae = make_vae(model, pipe, "madebyollin")
+    if vae is not None
+        pipe.vae = vae
+
+    scheduler = make_scheduler(model, pipe, "EulerAncestralDiscreteScheduler")
+    if scheduler is not None
+        pipe.scheduler = scheduler
 
     pipe.inference_steps = inference_steps  
     pipe.override_guidance_scale = None
@@ -213,9 +261,6 @@ def make_sdxl_ti_sketch_pose(inference_steps=40):
 
     print(f"SETUP ---- C2 {datetime.now()}");
 
-    vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
-    scheduler = EulerAncestralDiscreteScheduler.from_pretrained(base, subfolder="scheduler")
-
     pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
         base, 
         vae=vae, 
@@ -225,6 +270,14 @@ def make_sdxl_ti_sketch_pose(inference_steps=40):
         variant="fp16"
     )    
 
+    vae = make_vae(model, pipe, "madebyollin")
+    if vae is not None
+        pipe.vae = vae
+
+    scheduler = make_scheduler(model, pipe, "EulerAncestralDiscreteScheduler")
+    if scheduler is not None
+        pipe.scheduler = scheduler
+        
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
     pipe.human_name = "sdxl_ti_sketch_pose"
@@ -234,27 +287,46 @@ def make_sdxl_ti_sketch_pose(inference_steps=40):
 
     return pipe
 
-def make_ti_pose(model_type, device=device):
+def parse_model_string(model_string):
+    components = model_string.split("+")
+    result = {"model": components[0], "vae": None, "scheduler": None}
+    
+    for comp in components[1:]:
+        if "=" in comp:
+            key, value = comp.split("=", 1)
+            result[key] = value
+    
+    return result
+
+def make_ti_pose(model_string, device=device):
+    m = parse_model_string(model_string);
+    model_type = m["model"]
     if model_type == "sdxl":
-        return make_sdxl_ti_pose(device=device)
+        return make_sdxl_ti_pose(device=device, model=m)
     if model_type == "sdxl-lightning":
-        return make_sdxli_ti_pose(device=device)
+        return make_sdxli_ti_pose(device=device, model=m)
 
     return None
 
-def make_ctrl_pose(model_type, device=device):
+def make_ctrl_pose(model_string, device=device):
+    m = parse_model_string(model_string);
+    model_type = m["model"]
+
     if model_type == "sdxl":
-        return make_sdxl_ctrl_pose(device=device)
+        return make_sdxl_ctrl_pose(device=device, model=m)
     if model_type == "sdxl-lightning":
-        return make_sdxli_ctrl_pose(device=device)
+        return make_sdxli_ctrl_pose(device=device, model=m)
 
     return None
 
-def make(model_type, device=device):
+def make(model_string, device=device):
+    m = parse_model_string(model_string);
+    model_type = m["model"]
+
     if model_type == "sdxl":
-        return make_sdxl(device=device)
+        return make_sdxl(device=device, model=m)
     if model_type == "sdxl-lightning":
-        return make_sdxli(device=device)
+        return make_sdxli(device=device, model=m)
 
     return None
 
