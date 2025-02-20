@@ -42,6 +42,7 @@ def process(env, job_id, job_input):
         image=pose_image_sized,
         width=job_input['width'],
         height=job_input['height'],
+        controlnet_conditioning_scale=0.1
         # control_guidance_start=0.2,
         # control_guidance_end=0.4
     ).images
