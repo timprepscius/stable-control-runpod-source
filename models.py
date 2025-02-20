@@ -47,7 +47,7 @@ def make_sdxl_ctrl_pose(inference_steps=60, device=device):
 
     return pipe
 
-def make_sdxli_ctrl_pose(inference_steps=60, device=device):
+def make_sdxli_ctrl_pose(inference_steps=8, device=device):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
     repo = "ByteDance/SDXL-Lightning"
     ckpt = f"sdxl_lightning_{inference_steps}step_unet.safetensors" # Use the correct ckpt for your step setting!
