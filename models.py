@@ -369,6 +369,8 @@ def make(model_string, device=device):
         return make_sdxl(device=device, model=m)
     if model_type == "sdxl-lightning":
         return make_sdxli(device=device, model=m)
+    if model_type == "sdxl-turbo":
+        return make_sdxl_turbo(device=device, model=m)
 
     return None
 
