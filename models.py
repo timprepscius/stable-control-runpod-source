@@ -5,6 +5,10 @@ import torch
 
 from diffusers import MultiAdapter, StableDiffusionXLAdapterPipeline, T2IAdapter, EulerAncestralDiscreteScheduler, AutoencoderKL
 from diffusers import UniPCMultistepScheduler, ControlNetModel, StableDiffusionXLPipeline, StableDiffusionXLControlNetPipeline, UNet2DConditionModel, EulerDiscreteScheduler
+
+from diffusers import BitsAndBytesConfig, SD3Transformer2DModel
+from diffusers import StableDiffusion3Pipeline
+
 from huggingface_hub import hf_hub_download
 from safetensors.torch import load_file
 import json
@@ -194,7 +198,68 @@ def make_sdxl(inference_steps=60, device=device, model=empty_model):
         pipe.to(device, torch.float16)
 
 
-    return pipe    
+    return pipe   
+
+def make_sd3_turbo(inference_steps=4, device=device, model=empty_model):
+    base = "stabilityai/stable-diffusion-3.5-large-turbo"
+
+    nf4_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.bfloat16
+    )
+    model_nf4 = SD3Transformer2DModel.from_pretrained(
+        model_id,
+        subfolder="transformer",
+        quantization_config=nf4_config,
+        torch_dtype=torch.bfloat16
+    )
+
+    t5_nf4 = T5EncoderModel.from_pretrained("diffusers/t5-nf4", torch_dtype=torch.bfloat16)
+
+    pipeline = StableDiffusion3Pipeline.from_pretrained(
+        model_id, 
+        transformer=model_nf4,
+        text_encoder_3=t5_nf4,
+        torch_dtype=torch.bfloat16
+    )
+    # pipeline.enable_model_cpu_offload()
+
+
+    set_vae(model, pipe, None)
+    set_scheduler(model, pipe, None)
+
+    pipe.inference_steps = inference_steps
+    pipe.override_guidance_scale = 0
+    pipe.human_name = f"sd3_turbo_{model['vae']}_scheduler_{model['scheduler']}"
+
+    if device is not None:
+        pipe.to(device, torch.float16)
+
+
+    return pipe        
+
+def make_sdxl_turbo(inference_steps=1, device=device, model=empty_model):
+    base = "stabilityai/sdxl-turbo"
+
+    pipe = AutoPipelineForText2Image.from_pretrained(
+        base, 
+        torch_dtype=torch.float16, 
+        variant="fp16"
+    )
+
+    set_vae(model, pipe, None)
+    set_scheduler(model, pipe, None)
+
+    pipe.inference_steps = inference_steps
+    pipe.override_guidance_scale = 0
+    pipe.human_name = f"sdxl_turbo_{model['vae']}_scheduler_{model['scheduler']}"
+
+    if device is not None:
+        pipe.to(device, torch.float16)
+
+
+    return pipe        
 
 def make_sdxl_ti_pose(inference_steps=60, device=device, model=empty_model):
     base = "stabilityai/stable-diffusion-xl-base-1.0"
