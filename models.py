@@ -240,7 +240,7 @@ def make_sd3_turbo(inference_steps=4, device=device, model=empty_model):
 
     return pipe        
 
-def make_sdxl_turbo(inference_steps=4, device=device, model=empty_model):
+def make_sdxl_turbo(inference_steps=8, device=device, model=empty_model):
     base = "stabilityai/sdxl-turbo"
 
     pipe = AutoPipelineForText2Image.from_pretrained(
