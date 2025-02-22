@@ -7,8 +7,8 @@ from diffusers import MultiAdapter, StableDiffusionXLAdapterPipeline, T2IAdapter
 from diffusers import UniPCMultistepScheduler, ControlNetModel, StableDiffusionXLPipeline, StableDiffusionXLControlNetPipeline, UNet2DConditionModel, EulerDiscreteScheduler
 from diffusers import AutoPipelineForText2Image
 
-from diffusers import BitsAndBytesConfig, SD3Transformer2DModel
-from diffusers import StableDiffusion3Pipeline
+# from diffusers import BitsAndBytesConfig, SD3Transformer2DModel
+# from diffusers import StableDiffusion3Pipeline
 
 from huggingface_hub import hf_hub_download
 from safetensors.torch import load_file
@@ -253,7 +253,7 @@ def make_sdxl_turbo(inference_steps=8, device=device, model=empty_model):
     set_scheduler(model, pipe, None)
 
     pipe.inference_steps = inference_steps
-    pipe.override_guidance_scale = 0
+    pipe.override_guidance_scale = 4
     pipe.human_name = f"sdxl_turbo_{model['vae']}_scheduler_{model['scheduler']}"
 
     if device is not None:
@@ -372,6 +372,8 @@ def make(model_string, device=device):
         return make_sdxli(device=device, model=m)
     if model_type == "sdxl-turbo":
         return make_sdxl_turbo(device=device, model=m)
+    if model_type == "sd3-turbo":
+        return make_sd3_turbo(device=device, model=m)
 
     return None
 
