@@ -240,6 +240,8 @@ def make_sd3_turbo(inference_steps=4, device=device, model=empty_model):
     return pipe        
 
 def make_sdxl_turbo(inference_steps=1, device=device, model=empty_model):
+    print("here")
+
     base = "stabilityai/sdxl-turbo"
 
     pipe = AutoPipelineForText2Image.from_pretrained(
@@ -254,6 +256,10 @@ def make_sdxl_turbo(inference_steps=1, device=device, model=empty_model):
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = 0
     pipe.human_name = f"sdxl_turbo_{model['vae']}_scheduler_{model['scheduler']}"
+
+    print("here")
+
+    print(f"inference_steps = {pipe.inference_steps}")
 
     if device is not None:
         pipe.to(device, torch.float16)
