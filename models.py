@@ -80,12 +80,24 @@ def make_sdxl_ctrl_pose(inference_steps=60, device=device, model=empty_model):
     set_vae(model, pipe, "madebyollin")
     set_scheduler(model, pipe, "UniPCMultistepScheduler")
 
-    if device is not None:
-        pipe.to(device, torch.float16)
-
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
     pipe.human_name = f"sdxl_ctrl_pose_vae_{model['vae']}_scheduler_{model['scheduler']}"
+
+    def runner(p):
+        return pipe(
+            prompt=p["prompt"], 
+            negative_prompt=p["negative_prompt"], 
+            num_inference_steps=pipe.inference_steps, 
+            guidance_scale=p["guidance_scale"] if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
+            width=p['width'],
+            height=p['height']
+        )
+
+    pipe.runner = runner
+
+    if device is not None:
+        pipe.to(device, torch.float16)
 
     return pipe
 
@@ -110,12 +122,24 @@ def make_sdxli_ctrl_pose(inference_steps=8, device=device, model=empty_model):
     set_vae(model, pipe, "madebyollin")
     set_scheduler(model, pipe, "UniPCMultistepScheduler")
 
-    if device is not None:
-        pipe.to(device, torch.float16)
-
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = 0
     pipe.human_name = f"sdxl_lightning_ctrl_pose_vae_{model['vae']}_scheduler_{model['scheduler']}"
+
+    def runner(p):
+        return pipe(
+            prompt=p["prompt"], 
+            negative_prompt=p["negative_prompt"], 
+            num_inference_steps=pipe.inference_steps, 
+            guidance_scale=p["guidance_scale"] if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
+            width=p['width'],
+            height=p['height']
+        )
+
+    pipe.runner = runner
+
+    if device is not None:
+        pipe.to(device, torch.float16)
 
     return pipe   
 
@@ -137,9 +161,20 @@ def make_sdxli(inference_steps=8, device=device, model=empty_model):
     pipe.override_guidance_scale = 0
     pipe.human_name = f"sdxl_lightning_vae_{model['vae']}_scheduler_{model['scheduler']}"
 
+    def runner(p):
+        return pipe(
+            prompt=p["prompt"], 
+            negative_prompt=p["negative_prompt"], 
+            num_inference_steps=pipe.inference_steps, 
+            guidance_scale=p["guidance_scale"] if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
+            width=p['width'],
+            height=p['height']
+        )
+
+    pipe.runner = runner
+
     if device is not None:
         pipe.to(device, torch.float16)
-
 
     return pipe
 
@@ -174,6 +209,18 @@ def make_sdxli_ti_pose(inference_steps=8, device=device, model=empty_model):
     pipe.override_guidance_scale = 0
     pipe.human_name = f"sdxl_lightning_ti_pose_vae_{model['vae']}_scheduler_{model['scheduler']}"
 
+    def runner(p):
+        return pipe(
+            prompt=p["prompt"], 
+            negative_prompt=p["negative_prompt"], 
+            num_inference_steps=pipe.inference_steps, 
+            guidance_scale=p["guidance_scale"] if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
+            width=p['width'],
+            height=p['height']
+        )
+
+    pipe.runner = runner
+
     if device is not None:
         pipe.to(device, torch.float16)
 
@@ -194,6 +241,18 @@ def make_sdxl(inference_steps=60, device=device, model=empty_model):
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
     pipe.human_name = f"sdxl_vae_{model['vae']}_scheduler_{model['scheduler']}"
+
+    def runner(p):
+        return pipe(
+            prompt=p["prompt"], 
+            negative_prompt=p["negative_prompt"], 
+            num_inference_steps=pipe.inference_steps, 
+            guidance_scale=p["guidance_scale"] if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
+            width=p['width'],
+            height=p['height']
+        )
+
+    pipe.runner = runner
 
     if device is not None:
         pipe.to(device, torch.float16)
@@ -234,9 +293,20 @@ def make_sd3_turbo(inference_steps=4, device=device, model=empty_model):
     pipe.override_guidance_scale = 0
     pipe.human_name = f"sd3_turbo_{model['vae']}_scheduler_{model['scheduler']}"
 
+    def runner(p):
+        return pipe(
+            prompt=p["prompt"], 
+            negative_prompt=p["negative_prompt"], 
+            num_inference_steps=pipe.inference_steps, 
+            guidance_scale=p["guidance_scale"] if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
+            width=p['width'],
+            height=p['height']
+        )
+
+    pipe.runner = runner
+
     if device is not None:
         pipe.to(device, torch.float16)
-
 
     return pipe        
 
@@ -253,8 +323,20 @@ def make_sdxl_turbo(inference_steps=8, device=device, model=empty_model):
     set_scheduler(model, pipe, None)
 
     pipe.inference_steps = inference_steps
-    pipe.override_guidance_scale = 4
+    pipe.override_guidance_scale = 0
     pipe.human_name = f"sdxl_turbo_{model['vae']}_scheduler_{model['scheduler']}"
+
+    def runner(p):
+        return pipe(
+            prompt=p["prompt"], 
+            num_inference_steps=pipe.inference_steps, 
+            guidance_scale=0.0,
+            strength=1.0 / pipe.inference_steps,
+            width=p['width'],
+            height=p['height']
+        )
+
+    pipe.runner = runner
 
     if device is not None:
         pipe.to(device, torch.float16)
@@ -285,6 +367,18 @@ def make_sdxl_ti_pose(inference_steps=60, device=device, model=empty_model):
     pipe.inference_steps = inference_steps  
     pipe.override_guidance_scale = None
     pipe.human_name = f"sdxl_ti_pose_vae_{model['vae']}_scheduler_{model['scheduler']}"
+
+    def runner(p):
+        return pipe(
+            prompt=p["prompt"], 
+            negative_prompt=p["negative_prompt"], 
+            num_inference_steps=pipe.inference_steps, 
+            guidance_scale=p["guidance_scale"] if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
+            width=p['width'],
+            height=p['height']
+        )
+
+    pipe.runner = runner
 
     if device is not None:
         pipe.to(device, torch.float16)
@@ -323,6 +417,18 @@ def make_sdxl_ti_sketch_pose(inference_steps=40, model=empty_model):
     pipe.inference_steps = inference_steps
     pipe.override_guidance_scale = None
     pipe.human_name = f"sdxl_ti_sketch_pose_vae_{model['vae']}_scheduler_{model['scheduler']}"
+
+    def runner(p):
+        return pipe(
+            prompt=p["prompt"], 
+            negative_prompt=p["negative_prompt"], 
+            num_inference_steps=pipe.inference_steps, 
+            guidance_scale=p["guidance_scale"] if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
+            width=p['width'],
+            height=p['height']
+        )
+
+    pipe.runner = runner
 
     if device is not None:
         pipe.to(device, torch.float16)
