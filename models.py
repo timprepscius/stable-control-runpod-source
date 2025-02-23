@@ -339,7 +339,6 @@ def make_sdxl_turbo(inference_steps=1, device=device, model=empty_model):
             prompt=p["prompt"], 
             num_inference_steps=steps, 
             guidance_scale=0.0,
-            strength=1.0 / steps,
             width=p['width'],
             height=p['height']
         )
