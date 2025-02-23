@@ -29,6 +29,12 @@ def load_test():
 empty_model = { "model": None, "vae": None, "scheduler": None }
 
 
+def dict_value_or_default(m, k, d):
+    if k in m:
+        return m[k]
+
+    return d
+
 def value_or_default(v, d):
     if v is not None:
         return v
@@ -327,11 +333,13 @@ def make_sdxl_turbo(inference_steps=1, device=device, model=empty_model):
     pipe.human_name = f"sdxl_turbo_{model['vae']}_scheduler_{model['scheduler']}"
 
     def runner(p):
+        steps = dict_value_or_default(p, "inference_steps", pipe.inference_steps)
+
         return pipe(
             prompt=p["prompt"], 
-            num_inference_steps=pipe.inference_steps, 
+            num_inference_steps=steps, 
             guidance_scale=0.0,
-            strength=1.0 / pipe.inference_steps,
+            strength=1.0 / pipe.steps,
             width=p['width'],
             height=p['height']
         )

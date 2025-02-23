@@ -37,4 +37,9 @@ INPUT_SCHEMA = {
         'required': False,
         'default': None
     },
+    'inference_steps': {
+        'type': int,
+        'required': False,
+        'default': None
+    }
 }
