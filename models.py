@@ -269,8 +269,8 @@ def make_sdxl(inference_steps=60, device=device, model=empty_model):
     return pipe   
 
 def make_sd3_turbo(inference_steps=4, device=device, model=empty_model):
-    base = "stabilityai/stable-diffusion-3.5-large-turbo"
-
+    model_id = "stabilityai/stable-diffusion-3.5-large-turbo"
+    
     nf4_config = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
@@ -304,9 +304,9 @@ def make_sd3_turbo(inference_steps=4, device=device, model=empty_model):
     def runner(p):
         return pipe(
             prompt=p["prompt"], 
-            negative_prompt=p["negative_prompt"], 
             num_inference_steps=pipe.inference_steps, 
-            guidance_scale=p["guidance_scale"] if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
+            guidance_scale=0.0,
+            max_sequence_length=512,
             width=p['width'],
             height=p['height']
         )
