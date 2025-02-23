@@ -12,7 +12,7 @@ INPUT_SCHEMA = {
     'negative_prompt': {
         'type': str,
         'required': True,
-        'default': None
+        'default': ''
     },
     'guidance_scale': {
         'type': float,
