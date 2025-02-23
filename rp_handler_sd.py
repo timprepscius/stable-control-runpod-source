@@ -21,10 +21,6 @@ def process(env, job_id, job_input):
 
     pipe = env["pipe"]
 
-    prompt = job_input['prompt']
-    negative_prompt = job_input['negative_prompt']
-    guidance_scale = job_input['guidance_scale']
-
     generated_images = pipe.runner(job_input).images
 
     # pipe(
