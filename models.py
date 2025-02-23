@@ -7,8 +7,10 @@ from diffusers import MultiAdapter, StableDiffusionXLAdapterPipeline, T2IAdapter
 from diffusers import UniPCMultistepScheduler, ControlNetModel, StableDiffusionXLPipeline, StableDiffusionXLControlNetPipeline, UNet2DConditionModel, EulerDiscreteScheduler
 from diffusers import AutoPipelineForText2Image
 
-# from diffusers import BitsAndBytesConfig, SD3Transformer2DModel
-# from diffusers import StableDiffusion3Pipeline
+from transformers import BitsAndBytesConfig
+
+from diffusers import SD3Transformer2DModel
+from diffusers import StableDiffusion3Pipeline
 
 from huggingface_hub import hf_hub_download
 from safetensors.torch import load_file
