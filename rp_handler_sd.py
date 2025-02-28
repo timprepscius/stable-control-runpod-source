@@ -23,15 +23,6 @@ def process(env, job_id, job_input):
 
     generated_images = pipe.runner(job_input).images
 
-    # pipe(
-    #     prompt=prompt, 
-    #     negative_prompt=negative_prompt, 
-    #     num_inference_steps=pipe.inference_steps, 
-    #     guidance_scale=guidance_scale if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
-    #     width=job_input['width'],
-    #     height=job_input['height']
-    # ).images
-
     print(f"RUN ---- B {datetime.now()}");
 
     output_paths = []

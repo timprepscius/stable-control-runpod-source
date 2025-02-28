@@ -11,7 +11,7 @@ INPUT_SCHEMA = {
     },
     'negative_prompt': {
         'type': str,
-        'required': True,
+        'required': False,
         'default': ''
     },
     'guidance_scale': {

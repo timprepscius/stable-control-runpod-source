@@ -31,9 +31,9 @@ from rp_schema import INPUT_SCHEMA
 
 print(f"SETUP ---- 0C {datetime.now()}");
 
-import rp_handler_sd_ctrl_pose as model
+import rp_handler_sd as model
 
-env = model.make_env("sdxl")
+env = model.make_env("flux-schnell")
 
 #######################################
 #######################################
