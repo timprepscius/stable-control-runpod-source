@@ -1,6 +1,6 @@
 from models_common import *
 
-from diffusers.flux import FluxPipeline
+from diffusers import FluxPipeline
 
 def make_flux_schnell(inference_steps=4, device=device, model=empty_model):
     pipe = FluxPipeline.from_pretrained("black-forest-labs/FLUX.1-schnell", torch_dtype=torch.bfloat16)
