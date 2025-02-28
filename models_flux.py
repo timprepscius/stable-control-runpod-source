@@ -28,7 +28,7 @@ def make_flux_schnell(inference_steps=4, device=device, model=empty_model):
 
     pipe.runner = runner
 
-    if device is not None:
+    if device is not None and model["model"] != "flux-schnell-offline":
         pipe.to(device, torch.float16)
 
 
