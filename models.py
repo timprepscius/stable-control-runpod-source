@@ -54,9 +54,9 @@ def make(model_string, device=device):
         return make_sdxl_turbo(device=device, model=m)
     if model_type == "sd3-turbo":
         return make_sd3_turbo(device=device, model=m)
-    if model_type == "flux-schnell"
+    if model_type == "flux-schnell":
         return make_flux_schnell(device=device, model=m)
-    if model_type == "flux-schnell-offline"
+    if model_type == "flux-schnell-offline":
         return make_flux_schnell(device=device, model=m)
 
     return None
