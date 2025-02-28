@@ -17,7 +17,7 @@ def make_flux_schnell(inference_steps=4, device=device, model=empty_model):
     def runner(p):
         return pipe(
             prompt=p["prompt"], 
-            negative_prompt=p["negative_prompt"], 
+            negative_prompt=dict_value_or_default(p, "negative_prompt", None), 
             num_inference_steps=pipe.inference_steps, 
             max_sequence_length=256,
             guidance_scale=p["guidance_scale"] if pipe.override_guidance_scale is None else pipe.override_guidance_scale,
