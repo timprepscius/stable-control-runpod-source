@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import os
-import torch
 
 from models_common import *
 from models_flux import *
